@@ -7,18 +7,18 @@
 // Square Matrix Constructor
 Matrix::Matrix(int n)
 : rows(n), cols(n), A(nullptr), S(nullptr), nonZeroCount(0) {
-    A = new int[rows * cols];
+    A = new int[rows * cols]();
 }
 
 // Non-Square Matrix Constructor
 Matrix::Matrix(int rows, int cols)
 : rows(rows), cols(cols), A(nullptr), S(nullptr), nonZeroCount(0) {
-    A = new int[rows * cols];
+    A = new int[rows * cols]();
 }
 
-// Matrix filling function (same as before)
+// Matrix filling function
 void Matrix::fillMatrix(int percent) {
-    srand(time(NULL));
+    srand(static_cast<unsigned int>(time(NULL))); // Seed for randomness
     for (int i = 0; i < rows * cols; i++) {
         if (rand() % 100 < percent) 
             A[i] = 0;
@@ -27,7 +27,7 @@ void Matrix::fillMatrix(int percent) {
     }
 }
 
-// Matrix printing function (same as before)
+// Matrix printing function
 void Matrix::printMatrix() const {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++)
@@ -50,11 +50,8 @@ int Matrix::getNonZeroCount() const {
 void Matrix::denseToSparse() {
     nonZeroCount = getNonZeroCount();
     
-    if (S != nullptr) {
-        delete[] S; // 기존의 S가 있으면 해제
-    }
-
-    S = new SparseMatrix[nonZeroCount]; // 새로운 희소 행렬 할당
+    delete[] S; // Free previous memory for sparse matrix
+    S = new SparseMatrix[nonZeroCount]; // Allocate new sparse matrix
     int count = 0;
     
     for (int i = 0; i < rows * cols; i++) {
@@ -67,11 +64,22 @@ void Matrix::denseToSparse() {
     }
 }
 
-// Sparse matrix printing function (same as before)
+// Sparse matrix printing function
 void Matrix::printSparseMatrix() const {
     for (int i = 0; i < nonZeroCount; i++) {
         cout << S[i].row << " " << S[i].col << " " << S[i].value << endl;
     }
+}
+
+// Transpose matrix method (returns a new Matrix object)
+Matrix Matrix::transpose() const {
+    Matrix transposed(cols, rows); // Create new transposed matrix
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            transposed.A[j * rows + i] = A[i * cols + j]; // Transpose values
+        }
+    }
+    return transposed; // Return the transposed matrix
 }
 
 // Destructor
