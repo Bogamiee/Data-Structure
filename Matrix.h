@@ -30,8 +30,9 @@ class Matrix {
         void denseToSparse(); // Convert dense matrix to sparse matrix
         void printSparseMatrix() const; // Print the sparse matrix
 
+        Matrix transpose() const; // Transpose matrix method (returning a new object)
+
         ~Matrix(); // Destructor
 };
 
 #endif
-
