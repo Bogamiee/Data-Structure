@@ -4,9 +4,13 @@ using namespace std;
 
 int main() {
     Matrix a(5);
-    a.createMatrix();
     a.fillMatrix(50);
     a.printMatrix();
-    a.~Matrix();
+
+    cout << endl;
+
+    a.denseToSparse();
+    a.printSparseMatrix();
+
     return 0;
 }
