@@ -6,6 +6,7 @@
 using namespace std;
 
 #define PERCENT 50
+#define endl "\n"
 
 int main() {
     int choice, rows, cols;
