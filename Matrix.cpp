@@ -4,6 +4,10 @@
 
 #define endl "\n"
 
+// Default constructor
+Matrix::Matrix()
+: rows(0), cols(0), A(nullptr), S(nullptr), nonZeroCount(0) {}
+
 // Square matrix constructor
 Matrix::Matrix(int n)
 : rows(n), cols(n), A(nullptr), S(nullptr), nonZeroCount(0) {
@@ -16,13 +20,68 @@ Matrix::Matrix(int rows, int cols)
     A = new int[rows * cols](); // Initialize with zeros
 }
 
+// Copy constructor
+Matrix::Matrix(const Matrix& m)
+: rows(m.rows), cols(m.cols), A(new int[m.rows * m.cols]), S(new SparseMatrix[m.nonZeroCount]), nonZeroCount(m.nonZeroCount) {
+    for (int i = 0; i < rows * cols; i++) {
+        A[i] = m.A[i];
+    }
+    for (int i = 0; i < nonZeroCount; i++) {
+        S[i] = m.S[i];
+    }
+}
+
+// Assignment operator
+Matrix& Matrix::operator=(const Matrix& m) {
+    if (this == &m) {
+        return *this;
+    }
+
+    delete[] A; // Free memory for matrix
+    delete[] S; // Free memory for sparse matrix
+
+    rows = m.rows;
+    cols = m.cols;
+    nonZeroCount = m.nonZeroCount;
+
+    A = new int[rows * cols];
+    S = new SparseMatrix[nonZeroCount];
+
+    for (int i = 0; i < rows * cols; i++) {
+        A[i] = m.A[i];
+    }
+    for (int i = 0; i < nonZeroCount; i++) {
+        S[i] = m.S[i];
+    }
+
+    return *this;
+}
+
+// Get the number of rows
+int Matrix::getRows() const {
+    return rows;
+}
+
+// Get the number of columns
+int Matrix::getCols() const {
+    return cols;
+}
+
+// Get the value at the given index
+int Matrix::getValue(int index) const {
+    if (index < 0 || index >= rows * cols) {
+        cerr << "Error: Index out of bounds." << endl;
+        return -1;
+    }
+    return A[index];
+}
+
 // Fill the matrix with random numbers
 void Matrix::fillMatrix(int percent) {
     if (percent < 0 || percent > 100) {
         cerr << "Error: Percent must be between 0 and 100." << endl;
         return;
     }
-    srand(static_cast<unsigned int>(time(NULL))); // Seed for randomness
     for (int i = 0; i < rows * cols; i++) {
         if (rand() % 100 < percent) 
             A[i] = 0; // Set to zero
@@ -82,6 +141,15 @@ void Matrix::transpose() const {
         }
         cout << endl; // New line after each row
     }
+}
+
+// Set the value at the given index
+void Matrix::setValue(int index, int value) {
+    if (index < 0 || index >= rows * cols) {
+        cerr << "Error: Index out of bounds." << endl;
+        return;
+    }
+    A[index] = value;
 }
 
 // Destructor
