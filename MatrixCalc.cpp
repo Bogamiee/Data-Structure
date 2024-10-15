@@ -56,6 +56,16 @@ Matrix MatrixCalc::mul(const Matrix& a, const Matrix& b) {
 }
 
 Matrix MatrixCalc::div(const Matrix& a, const Matrix& b) {
-    Matrix result(0);
+    if (a.getCols() != b.getCols() || a.getRows() != b.getRows()) {
+        cerr << "Error: Matrices must have the same dimensions." << endl;
+        return Matrix(0);
+    }
+    
+    Matrix result(a.getRows(), a.getCols());
+
+    for (int i = 0; i < a.getRows() * a.getCols(); i++) {
+        result.setValue(i, a.getValue(i) / b.getValue(i));
+    }
+
     return result;
 }

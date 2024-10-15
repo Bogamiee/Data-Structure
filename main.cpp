@@ -1,42 +1,152 @@
 #include <iostream>
+#include <ctime>
+#include <chrono>
 #include "Matrix.h"
 #include "MatrixCalc.h"
 using namespace std;
 
-#define fast ios_base::sync_with_stdio(false); cin.tie(0), cout.tie(0)
+#define PERCENT 50
 
 int main() {
-    fast;
-    int N;
-    cin >> N;
+    int choice, rows, cols;
+    Matrix c;
 
     srand(static_cast<unsigned int>(time(NULL))); // Seed for randomness
-                                                  
-    Matrix a(N);
-    a.fillMatrix(50);
-    a.printMatrix();
+    
+    while (true) {
+        cout << "==================================" << endl;
+        cout << "1. Add two matrices" << endl;
+        cout << "2. Subtract two matrices" << endl;
+        cout << "3. Multiply two matrices" << endl;
+        cout << "4. Divide two matrices" << endl;
+        cout << "5. Sparse matrix operations" << endl;
+        cout << "6. Transpose a matrix" << endl;
+        cout << "7. Exit" << endl;
+        cout << "==================================" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+        cout << endl;
 
-    cout << "\n";
+        if (choice == 1 || choice == 2 || choice == 4) { // Add, subtract, divide
+            cout << "Enter the number of rows: ";
+            cin >> rows;
+            cout << "Enter the number of columns: ";
+            cin >> cols;
+            cout << endl; 
 
-    Matrix b(N);
-    b.fillMatrix(50);
-    b.printMatrix();
+            if (rows <= 0 || cols <= 0) {
+                cout << "Invalid dimensions." << endl;
+                continue;
+            }
 
-    cout << "\n";
+            Matrix a(rows, cols);
+            Matrix b(rows, cols);
 
-    MatrixCalc calc(a, b);
-    Matrix c = calc.add(a, b);
-    c.printMatrix();
+            a.fillMatrix(PERCENT);
+            b.fillMatrix(0);
+            
+            MatrixCalc calc(a, b);
 
-    cout << "\n";
+            if (choice == 1) {
+                c = calc.add(a, b);
+            } else if (choice == 2) {
+                c = calc.sub(a, b);
+            } else if (choice == 4) {
+                c = calc.div(a, b);
+            }
+            cout << "Matrix A:" << endl;
+            a.printMatrix();
 
-    Matrix d = calc.sub(a, b);
-    d.printMatrix();
+            cout << endl << "Matrix B:" << endl;
+            b.printMatrix();            
 
-    cout << "\n";
+            cout << endl << "Result:" << endl;
+            c.printMatrix();
+        }
+        else if (choice == 3) { // Multiply
+            cout << "Enter the number of rows for the first matrix: ";
+            cin >> rows;
+            cout << "Enter the number of columns for the first matrix: ";
+            cin >> cols;
+            cout << endl;
 
-    Matrix e = calc.mul(a, b);
-    e.printMatrix();
+            Matrix a(rows, cols);
 
+            cout << "Enter the number of rows for the second matrix: ";
+            cin >> rows;
+            cout << "Enter the number of columns for the second matrix: ";
+            cin >> cols;
+            cout << endl;
+
+            Matrix b(rows, cols);
+
+            a.fillMatrix(PERCENT);
+            b.fillMatrix(PERCENT);
+
+            MatrixCalc calc(a, b);
+
+            c = calc.mul(a, b);
+
+            cout << "Matrix A:" << endl;
+            a.printMatrix();
+
+            cout << endl << "Matrix B:" << endl;
+            b.printMatrix();
+
+            cout << endl << "Result:" << endl;
+            c.printMatrix();
+        }
+        else if (choice == 5) { // Sparse matrix operations
+            cout << "Enter the number of rows: ";
+            cin >> rows;
+            cout << "Enter the number of columns: ";
+            cin >> cols;
+            cout << endl;
+
+            if (rows <= 0 || cols <= 0) {
+                cout << "Invalid dimensions." << endl;
+                continue;
+            }
+
+            Matrix a(rows, cols);
+
+            a.fillMatrix(PERCENT);
+            a.denseToSparse();
+
+            cout << "Matrix A:" << endl;
+            a.printMatrix();
+
+            cout << endl << "Sparse matrix A:" << endl;
+            a.printSparseMatrix();
+        }
+        else if (choice == 6) { // Transpose
+            cout << "Enter the number of rows: ";
+            cin >> rows;
+            cout << "Enter the number of columns: ";
+            cin >> cols;
+            cout << endl;
+
+            if (rows <= 0 || cols <= 0) {
+                cout << "Invalid dimensions." << endl;
+                continue;
+            }
+
+            Matrix a(rows, cols);
+
+            a.fillMatrix(PERCENT);
+            a.transpose();
+
+            cout << endl << "Matrix A:" << endl;
+            a.printMatrix();
+        }
+        else if (choice == 7) { // Exit
+            break;
+        }
+        else {
+            cout << "Invalid choice." << endl;
+        }
+        cout << endl;
+    }
+    
     return 0;
 }
