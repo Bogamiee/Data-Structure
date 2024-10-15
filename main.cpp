@@ -1,8 +1,8 @@
 #include <iostream>
 #include <ctime>
-#include <chrono>
 #include "Matrix.h"
 #include "MatrixCalc.h"
+#include "TimeMsr.h"
 using namespace std;
 
 #define PERCENT 50
@@ -10,6 +10,7 @@ using namespace std;
 int main() {
     int choice, rows, cols;
     Matrix c;
+    TimeMsr timer;
 
     srand(static_cast<unsigned int>(time(NULL))); // Seed for randomness
     
@@ -48,12 +49,18 @@ int main() {
             MatrixCalc calc(a, b);
 
             if (choice == 1) {
-                c = calc.add(a, b);
+                timer.measureExecutionTime([&] {
+                    c = calc.add(a, b);
+                });
             } else if (choice == 2) {
+                timer.measureExecutionTime([&] {
                 c = calc.sub(a, b);
+                });
             } else if (choice == 4) {
+                timer.measureExecutionTime([&] {
                 c = calc.div(a, b);
-            }
+                });
+            }            
             cout << "Matrix A:" << endl;
             a.printMatrix();
 
@@ -85,7 +92,9 @@ int main() {
 
             MatrixCalc calc(a, b);
 
+            timer.measureExecutionTime([&] {
             c = calc.mul(a, b);
+            });
 
             cout << "Matrix A:" << endl;
             a.printMatrix();
@@ -111,7 +120,9 @@ int main() {
             Matrix a(rows, cols);
 
             a.fillMatrix(PERCENT);
+            timer.measureExecutionTime([&] {
             a.denseToSparse();
+            });
 
             cout << "Matrix A:" << endl;
             a.printMatrix();
@@ -134,7 +145,9 @@ int main() {
             Matrix a(rows, cols);
 
             a.fillMatrix(PERCENT);
+            timer.measureExecutionTime([&] {
             a.transpose();
+            });
 
             cout << endl << "Matrix A:" << endl;
             a.printMatrix();
@@ -145,6 +158,7 @@ int main() {
         else {
             cout << "Invalid choice." << endl;
         }
+        timer.printExecutionTime();
         cout << endl;
     }
     
