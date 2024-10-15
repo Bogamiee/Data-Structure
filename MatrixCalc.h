@@ -8,11 +8,14 @@ private:
     Matrix a;
     Matrix b;
 public:
+    MatrixCalc(); // Constructor
+    MatrixCalc(const Matrix& a); // Constructor
     MatrixCalc(const Matrix& a, const Matrix& b); // Constructor
     static Matrix add(const Matrix& a, const Matrix& b); // Add two matrices
     static Matrix sub(const Matrix& a, const Matrix& b); // Subtract two matrices
     static Matrix mul(const Matrix& a, const Matrix& b); // Multiply two matrices
     static Matrix div(const Matrix& a, const Matrix& b); // Divide two matrices
+    static Matrix transpose(const Matrix& a); // Transpose a matrix
 };
 
 #endif

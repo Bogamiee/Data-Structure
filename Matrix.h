@@ -34,7 +34,6 @@ public:
     int getNonZeroCount() const; // Get the number of non-zero elements
     void denseToSparse(); // Convert dense matrix to sparse matrix
     void printSparseMatrix() const; // Print the sparse matrix
-    void transpose() const; // Transpose the matrix and print it
     void setValue(int index, int value); // Set the value at the given index
     ~Matrix(); // Destructor
 };

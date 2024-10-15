@@ -1,6 +1,11 @@
 #include "MatrixCalc.h"
 #include "Matrix.h"
 
+MatrixCalc::MatrixCalc() {}
+
+MatrixCalc::MatrixCalc(const Matrix& a) 
+: a(a) {}
+
 MatrixCalc::MatrixCalc(const Matrix& a, const Matrix& b)
 : a(a), b(b) {}
 
@@ -69,3 +74,18 @@ Matrix MatrixCalc::div(const Matrix& a, const Matrix& b) {
 
     return result;
 }
+
+// Transpose the matrix
+Matrix MatrixCalc::transpose(const Matrix& a) {
+    Matrix result(a.getCols(), a.getRows());
+
+    for (int i = 0; i < a.getRows(); i++) {
+        for (int j = 0; j < a.getCols(); j++) {
+            result.setValue(j * a.getRows() + i, a.getValue(i * a.getCols() + j));
+        }
+    }
+
+    return result;
+}
+
+

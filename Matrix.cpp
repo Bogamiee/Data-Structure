@@ -133,16 +133,6 @@ void Matrix::printSparseMatrix() const {
     }
 }
 
-// Transpose the matrix and print it directly
-void Matrix::transpose() const {
-    for (unsigned int i = 0; i < cols; i++) {
-        for (unsigned int j = 0; j < rows; j++) {
-            cout << A[j * cols + i] << " "; // Access transposed values
-        }
-        cout << endl; // New line after each row
-    }
-}
-
 // Set the value at the given index
 void Matrix::setValue(int index, int value) {
     if (index < 0 || index >= rows * cols) {
