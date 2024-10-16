@@ -1,22 +1,22 @@
-#
 # Makefile
-#
 
 CC = g++
 CFLAGS = -Wall -g
 SRC = Matrix.cpp MatrixCalc.cpp MatrixOperation.cpp TimeMsr.cpp main.cpp
-OBJ = Matrix.o MatrixCalc.o MatrixOperation.o TimeMsr.o main.o
+OBJ = $(SRC:.cpp=.o)
 PROG = main
 
+# 기본 타겟: 실행 파일 생성
 all: $(PROG)
 
-${PROG} : ${OBJ}
-	${CC} -o ${PROG} ${OBJ}
-${OBJ} : ${SRC}
-	${CC} ${CFLAGS} -c -o Matrix.o Matrix.cpp
-	${CC} ${CFLAGS} -c -o MatrixCalc.o MatrixCalc.cpp
-	${CC} ${CFLAGS} -c -o MatrixOperation.o MatrixOperation.cpp
-	${CC} ${CFLAGS} -c -o TimeMsr.o TimeMsr.cpp
-	${CC} ${CFLAGS} -c -o main.o main.cpp
+# 실행 파일 생성 규칙
+$(PROG): $(OBJ)
+	$(CC) $(CFLAGS) -o $(PROG) $(OBJ)
+
+# .cpp 파일에서 .o 파일 생성 규칙 (자동화)
+%.o: %.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# clean 타겟: 생성된 파일 삭제
 clean:
-	rm *.o main
+	rm -f $(OBJ) $(PROG)
