@@ -8,14 +8,8 @@
 Matrix::Matrix()
 : rows(0), cols(0), A(nullptr), S(nullptr), nonZeroCount(0) {}
 
-// Square matrix constructor
-Matrix::Matrix(int n)
-: rows(n), cols(n), A(nullptr), S(nullptr), nonZeroCount(0) {
-    A = new int[rows * cols](); // Initialize with zeros
-}
-
-// Non-square matrix constructor
-Matrix::Matrix(int rows, int cols)
+// Matrix constructor
+Matrix::Matrix(unsigned int rows, unsigned int cols)
 : rows(rows), cols(cols), A(nullptr), S(nullptr), nonZeroCount(0) {
     A = new int[rows * cols](); // Initialize with zeros
 }
@@ -23,10 +17,10 @@ Matrix::Matrix(int rows, int cols)
 // Copy constructor
 Matrix::Matrix(const Matrix& m)
 : rows(m.rows), cols(m.cols), A(new int[m.rows * m.cols]), S(new SparseMatrix[m.nonZeroCount]), nonZeroCount(m.nonZeroCount) {
-    for (int i = 0; i < rows * cols; i++) {
+    for (unsigned int i = 0; i < rows * cols; i++) {
         A[i] = m.A[i];
     }
-    for (int i = 0; i < nonZeroCount; i++) {
+    for (unsigned int i = 0; i < nonZeroCount; i++) {
         S[i] = m.S[i];
     }
 }
@@ -47,10 +41,10 @@ Matrix& Matrix::operator=(const Matrix& m) {
     A = new int[rows * cols];
     S = new SparseMatrix[nonZeroCount];
 
-    for (int i = 0; i < rows * cols; i++) {
+    for (unsigned int i = 0; i < rows * cols; i++) {
         A[i] = m.A[i];
     }
-    for (int i = 0; i < nonZeroCount; i++) {
+    for (unsigned int i = 0; i < nonZeroCount; i++) {
         S[i] = m.S[i];
     }
 
@@ -58,17 +52,17 @@ Matrix& Matrix::operator=(const Matrix& m) {
 }
 
 // Get the number of rows
-int Matrix::getRows() const {
+unsigned int Matrix::getRows() const {
     return rows;
 }
 
 // Get the number of columns
-int Matrix::getCols() const {
+unsigned int Matrix::getCols() const {
     return cols;
 }
 
 // Get the value at the given index
-int Matrix::getValue(int index) const {
+int Matrix::getValue(unsigned int index) const {
     if (index < 0 || index >= rows * cols) {
         cerr << "Error: Index out of bounds." << endl;
         return -1;
@@ -82,7 +76,7 @@ void Matrix::fillMatrix(int percent) {
         cerr << "Error: Percent must be between 0 and 100." << endl;
         return;
     }
-    for (int i = 0; i < rows * cols; i++) {
+    for (unsigned int i = 0; i < rows * cols; i++) {
         if (rand() % 100 < percent) 
             A[i] = 0; // Set to zero
         else
@@ -100,9 +94,9 @@ void Matrix::printMatrix() const {
 }
 
 // Get the number of non-zero elements
-int Matrix::getNonZeroCount() const {
-    int count = 0;
-    for (int i = 0; i < rows * cols; i++) {
+unsigned int Matrix::getNonZeroCount() const {
+    unsigned int count = 0;
+    for (unsigned int i = 0; i < rows * cols; i++) {
         if (A[i] != 0)
             count++;
     }
@@ -115,8 +109,8 @@ void Matrix::denseToSparse() {
     delete[] S; // Free previous memory for sparse matrix
     S = new SparseMatrix[nonZeroCount]; // Allocate new sparse matrix
 
-    int count = 0;
-    for (int i = 0; i < rows * cols; i++) {
+    unsigned int count = 0;
+    for (unsigned int i = 0; i < rows * cols; i++) {
         if (A[i] != 0) {
             S[count].row = i / cols; // Row index
             S[count].col = i % cols; // Column index
@@ -128,13 +122,13 @@ void Matrix::denseToSparse() {
 
 // Print the sparse matrix
 void Matrix::printSparseMatrix() const {
-    for (int i = 0; i < nonZeroCount; i++) {
+    for (unsigned int i = 0; i < nonZeroCount; i++) {
         cout << S[i].row << " " << S[i].col << " " << S[i].value << endl;
     }
 }
 
 // Set the value at the given index
-void Matrix::setValue(int index, int value) {
+void Matrix::setValue(unsigned int index, int value) {
     if (index < 0 || index >= rows * cols) {
         cerr << "Error: Index out of bounds." << endl;
         return;
