@@ -8,7 +8,7 @@ using namespace std;
 
 class TimeMsr {
     private:
-        chrono::duration<double, micro> exec_time;
+        chrono::duration<long double, micro> exec_time;
     public:
         TimeMsr(); // Constructor
         ~TimeMsr(); // Destructor

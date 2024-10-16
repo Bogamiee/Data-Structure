@@ -1,7 +1,8 @@
+#include <cmath>
 #include "TimeMsr.h"
 
 TimeMsr::TimeMsr() {
-    exec_time = chrono::duration<double, micro>(0);
+    exec_time = chrono::duration<long double, micro>(0);
 }
 
 void TimeMsr::measureExecutionTime(function<void()> func) {
@@ -12,7 +13,21 @@ void TimeMsr::measureExecutionTime(function<void()> func) {
 }
 
 void TimeMsr::printExecutionTime() {
-    cout << "\nExecution time: " + to_string(exec_time.count()) + " microseconds" << endl;
+    long double microseconds = exec_time.count();
+    long double milliseconds = microseconds / 1000.0;
+    long double seconds = milliseconds / 1000.0;
+    long double minutes = seconds / 60.0;
+    long double hours = minutes / 60.0;
+
+    cout << "\nExecution time:" << endl;
+    cout << "- " << microseconds << " microseconds" << endl;
+    cout << "- " << milliseconds << " milliseconds" << endl;
+    cout << "- " << seconds << " seconds" << endl;
+    cout << "- " << static_cast<int>(minutes) << " minutes "
+         << fmod(seconds, 60.0) << " seconds" << endl;
+    cout << "- " << static_cast<int>(hours) << " hours "
+         << static_cast<int>(fmod(minutes, 60.0)) << " minutes "
+         << fmod(seconds, 60.0) << " seconds" << endl;
 }
 
 TimeMsr::~TimeMsr() {}
