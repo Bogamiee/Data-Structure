@@ -35,6 +35,8 @@ void printSparse(const sparse *sparseM);
 void startTimer();
 void subMatrix(const unsigned int row, const unsigned int col, int *A, int *B, int *C);
 void subSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC);
+void transposeMatrix(const unsigned int row, const unsigned int col, int *matrixA, int *matrixB);
+void transposeSparse(const sparse *sparseA, sparse **sparseB);
 
 int main() 
 {
@@ -226,6 +228,44 @@ int main()
                 getMatrixSize(&row, &col);
 
                 makeMatrix(row, col, &A);
+                makeMatrix(col, row, &B);
+
+                fillMatrix(row, col, A, percent);
+
+                startTimer();
+                transposeMatrix(row, col, A, B);
+                endTimer();
+
+                if (IS_PRINT)
+                {
+                    printf("\n행렬 A:\n");
+                    printMatrix(row, col, A);
+
+                    printf("\n전치 행렬 B:\n");
+                    printMatrix(col, row, B);
+                }
+
+                printf("\n일반 행렬 전치 행렬 변환 시간\n");
+                printExecutionTime();
+
+                denseToSparse(row, col, A, &sparseA);
+
+                startTimer();
+                transposeSparse(sparseA, &sparseB);
+                endTimer();
+
+                if (IS_PRINT)
+                {
+                    printf("\n희소 행렬 A:\n");
+                    printSparse(sparseA);
+
+                    printf("\n희소 행렬 전치 행렬 B:\n");
+                    printSparse(sparseB);
+                }
+
+                printf("\n희소 행렬 전치 행렬 변환 시간\n");
+                printExecutionTime();
+
                 break;
             case 6: // sparse matrix
                 getMatrixSize(&row, &col);
@@ -568,12 +608,12 @@ void printExecutionTime()
 
 void printMenu() 
 {
-    printf("1. 덧셈 비교\n"); // Two matrices are required, same size
-    printf("2. 뺄셈 비교\n"); // Two matrices are required, same size
-    printf("3. 곱셈 비교\n"); // Two matrices are required, A's column size == B's row size
-    printf("4. 나눗셈 비교\n"); // Two matrices are required, same size
-    printf("5. 전치행렬 비교\n"); // One matrix is required
-    printf("6. 희소 행렬 변환 시간 측정\n"); // One matrix is required
+    printf("1. 덧셈 수행 시간 비교\n"); // Two matrices are required, same size
+    printf("2. 뺄셈 수행 시간 비교\n"); // Two matrices are required, same size
+    printf("3. 곱셈 수행 시간 비교\n"); // Two matrices are required, A's column size == B's row size
+    printf("4. 나눗셈 수행 시간 비교\n"); // Two matrices are required, same size
+    printf("5. 전치 행렬 변환 시간 비교\n"); // One matrix is required
+    printf("6. 희소 행렬 변환 시간 비교\n"); // One matrix is required
     printf("7. 종료\n");
     printf("메뉴 선택: ");
 }
@@ -677,3 +717,34 @@ void subSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC)
     (*sparseC)[0].value = k - 1;
 }
 
+void transposeMatrix(const unsigned int row, const unsigned int col, int *matrixA, int *matrixB) 
+{
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            matrixB[j * row + i] = matrixA[i * col + j];
+        }
+    }
+}
+
+void transposeSparse(const sparse *sparseA, sparse **sparseB) 
+{
+    *sparseB = (sparse *)malloc((sparseA[0].value + 1) * sizeof(sparse));
+    if (*sparseB == NULL)
+    {
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+
+    (*sparseB)[0].row = sparseA[0].col;
+    (*sparseB)[0].col = sparseA[0].row;
+    (*sparseB)[0].value = sparseA[0].value;
+
+    for (int i = 0; i <= sparseA[0].value; i++)
+    {
+        (*sparseB)[i].row = sparseA[i].col;
+        (*sparseB)[i].col = sparseA[i].row;
+        (*sparseB)[i].value = sparseA[i].value;
+    }
+}
