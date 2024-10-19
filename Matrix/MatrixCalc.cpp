@@ -3,13 +3,18 @@
 
 MatrixCalc::MatrixCalc() {}
 
-MatrixCalc::MatrixCalc(const Matrix& a) 
-: a(a) {}
+MatrixCalc::MatrixCalc(Matrix& a) 
+: a(a) {
+    a.denseToSparse();
+}
 
-MatrixCalc::MatrixCalc(const Matrix& a, const Matrix& b)
-: a(a), b(b) {}
+MatrixCalc::MatrixCalc(Matrix& a, Matrix& b)
+: a(a), b(b) {
+    a.denseToSparse();
+    b.denseToSparse();
+}
 
-Matrix MatrixCalc::add(const Matrix& a, const Matrix& b) {
+Matrix MatrixCalc::add() {
     if (a.getRows() != b.getRows() || a.getCols() != b.getCols()) {
         cerr << "Error: Matrices must have the same dimensions." << endl;
         return Matrix(0, 0);
@@ -24,7 +29,7 @@ Matrix MatrixCalc::add(const Matrix& a, const Matrix& b) {
     return result;
 }
 
-Matrix MatrixCalc::sub(const Matrix& a, const Matrix& b) {
+Matrix MatrixCalc::sub() {
     if (a.getRows() != b.getRows() || a.getCols() != b.getCols()) {
         cerr << "Error: Matrices must have the same dimensions." << endl;
         return Matrix(0, 0);
@@ -39,7 +44,7 @@ Matrix MatrixCalc::sub(const Matrix& a, const Matrix& b) {
     return result;
 }
 
-Matrix MatrixCalc::mul(const Matrix& a, const Matrix& b) {
+Matrix MatrixCalc::mul() {
     if (a.getCols() != b.getRows()) {
         cerr << "Error: Number of columns in the first matrix must be equal to the number of rows in the second matrix." << endl;
         return Matrix(0, 0);
@@ -60,7 +65,7 @@ Matrix MatrixCalc::mul(const Matrix& a, const Matrix& b) {
     return result;
 }
 
-Matrix MatrixCalc::div(const Matrix& a, const Matrix& b) {
+Matrix MatrixCalc::div() {
     if (a.getCols() != b.getCols() || a.getRows() != b.getRows()) {
         cerr << "Error: Matrices must have the same dimensions." << endl;
         return Matrix(0, 0);
@@ -76,7 +81,7 @@ Matrix MatrixCalc::div(const Matrix& a, const Matrix& b) {
 }
 
 // Transpose the matrix
-Matrix MatrixCalc::transpose(const Matrix& a) {
+Matrix MatrixCalc::transpose() {
     Matrix result(a.getCols(), a.getRows());
 
     for (unsigned int i = 0; i < a.getRows(); i++) {
@@ -87,5 +92,3 @@ Matrix MatrixCalc::transpose(const Matrix& a) {
 
     return result;
 }
-
-

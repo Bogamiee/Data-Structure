@@ -9,6 +9,7 @@ MatrixOperation::~MatrixOperation() {}
 
 void MatrixOperation::run() {
     int choice;
+    int isPrint = 1; // 0: print nothing, 1: print matrix
 
     while (true) {
         printMenu();
@@ -19,7 +20,7 @@ void MatrixOperation::run() {
             break;
         }
         else if (choice > 0 && choice < 7) {
-            performOperation(choice);
+            performOperation(choice, isPrint);
         } 
         else {
             cout << "Invalid choice." << endl;
@@ -85,7 +86,7 @@ void MatrixOperation::performAdd() {
     makeMatrix(a, b);
     MatrixCalc calc(a, b);
     timer.measureExecutionTime([&] {
-        c = calc.add(a, b);
+        c = calc.add();
     });
 }
 
@@ -93,7 +94,7 @@ void MatrixOperation::performSub() {
     makeMatrix(a, b);
     MatrixCalc calc(a, b);
     timer.measureExecutionTime([&] {
-        c = calc.sub(a, b);
+        c = calc.sub();
     });
 }
 
@@ -104,7 +105,7 @@ void MatrixOperation::performMul() {
     makeMatrix(b);
     MatrixCalc calc(a, b);
     timer.measureExecutionTime([&] {
-        c = calc.mul(a, b);
+        c = calc.mul();
     });
 }
 
@@ -112,7 +113,7 @@ void MatrixOperation::performDiv() {
     makeMatrix(a, b, 0);
     MatrixCalc calc(a, b);
     timer.measureExecutionTime([&] {
-        c = calc.div(a, b);
+        c = calc.div();
     });
 }
 
@@ -127,37 +128,49 @@ void MatrixOperation::performTranspose() {
     makeMatrix(a);
     MatrixCalc calc(a);
     timer.measureExecutionTime([&] {
-        c = calc.transpose(a);
+        c = calc.transpose();
     });
 }
 
-void MatrixOperation::performOperation(int choice) {
+void MatrixOperation::performOperation(int choice, int isPrint) {
     switch (choice) {
         case 1:
             performAdd();
-            printResult(a, b, c);
+            if (isPrint) {
+                printResult(a, b, c);
+            }
             break;
         case 2:
             performSub();
-            printResult(a, b, c);
+            if (isPrint) {
+                printResult(a, b, c);
+            }
             break;
         case 3:
             performMul();
-            printResult(a, b, c);
+            if (isPrint) {
+                printResult(a, b, c);
+            }
             break;
         case 4:
             performDiv();
-            printResult(a, b, c);
+            if (isPrint) {
+                printResult(a, b, c);
+            }
             break;
         case 5:
             performSparse();
-            printResult(a);
-            cout << endl << "Sparse matrix:" << endl;
-            a.printSparseMatrix();
+            if (isPrint) {
+                printResult(a);   
+                cout << endl << "Sparse matrix:" << endl;
+                a.printSparseMatrix();
+            }
             break;
         default:
             performTranspose();
-            printResult(a, c);
+            if (isPrint) {
+                printResult(a, c);
+            }
             break;
     }
     timer.printExecutionTime();

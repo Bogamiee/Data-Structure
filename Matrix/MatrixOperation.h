@@ -28,7 +28,7 @@ class MatrixOperation {
         void performDiv();
         void performSparse();
         void performTranspose();
-        void performOperation(int choice);
+        void performOperation(int choice, int isPrint);
         void printResult(Matrix &a);
         void printResult(Matrix &a, Matrix &b);
         void printResult(Matrix &a, Matrix &b, Matrix &c);

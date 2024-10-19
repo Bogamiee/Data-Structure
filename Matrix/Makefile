@@ -3,7 +3,7 @@ CC = g++
 CFLAGS = -Wall -g
 
 # 소스 파일 목록
-SRC = InsertionSorter.cpp TimeMsr.cpp main.cpp
+SRC = Matrix.cpp MatrixCalc.cpp MatrixOperation.cpp TimeMsr.cpp main.cpp
 # .o 파일 목록을 자동 생성
 OBJ = $(SRC:.cpp=.o)
 

@@ -30,7 +30,8 @@ public:
 
     void fillMatrix(int percent); // Fill the matrix with random numbers
     void printMatrix() const; // Print the matrix
-    unsigned int getNonZeroCount() const; // Get the number of non-zero elements
+    void calcNonZeroCount(); // Calculate the number of non-zero elements
+    unsigned int getNonZero() const; // Get the number of non-zero elements
     void denseToSparse(); // Convert dense matrix to sparse matrix
     void printSparseMatrix() const; // Print the sparse matrix
     void setValue(unsigned int index, int value); // Set the value at the given index

@@ -93,19 +93,24 @@ void Matrix::printMatrix() const {
     }
 }
 
-// Get the number of non-zero elements
-unsigned int Matrix::getNonZeroCount() const {
+// Calculate the number of non-zero elements
+void Matrix::calcNonZeroCount() {
     unsigned int count = 0;
     for (unsigned int i = 0; i < rows * cols; i++) {
         if (A[i] != 0)
             count++;
     }
-    return count;
+    nonZeroCount = count;
+}
+
+// Get the number of non-zero elements
+unsigned int Matrix::getNonZero() const {
+    return nonZeroCount;
 }
 
 // Convert dense matrix to sparse matrix
 void Matrix::denseToSparse() {
-    nonZeroCount = getNonZeroCount(); // Count non-zero elements
+    calcNonZeroCount(); // Calculate the number of non-zero elements
     delete[] S; // Free previous memory for sparse matrix
     S = new SparseMatrix[nonZeroCount]; // Allocate new sparse matrix
 
