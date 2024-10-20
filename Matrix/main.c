@@ -7,7 +7,9 @@
 #include "timer.h"
 #include "sparse.h"
 
-#define IS_PRINT 0 // 1 if print matrix, 0 if not
+#define IS_PRINT 1 // 1 if print matrix, 0 if not
+#define IS_PRINTSPARSE 0 // 1 if print sparse matrix, 0 if not
+#define IS_PRINTSPARSEMATRIX 1 // 1 if print sparse matrix as matrix, 0 if not
 
 int percent = 50;
 
@@ -69,7 +71,7 @@ int main()
                 addSparse(sparseA, sparseB, &sparseC); // add sparse matrix
                 endTimer();
 
-                if (IS_PRINT)
+                if (IS_PRINTSPARSE)
                 {
                     printf("\n희소 행렬 A:\n");
                     printSparse(sparseA);
@@ -79,6 +81,18 @@ int main()
 
                     printf("\n희소 행렬 C:\n");
                     printSparse(sparseC);
+                }
+
+                if (IS_PRINTSPARSEMATRIX)
+                {
+                    printf("\n희소 행렬 A:\n");
+                    printSparseAsMatrix(sparseA);
+
+                    printf("\n희소 행렬 B:\n");
+                    printSparseAsMatrix(sparseB);
+
+                    printf("\n희소 행렬 C:\n");
+                    printSparseAsMatrix(sparseC);
                 }
     
                 printf("\n희소 행렬 덧셈 시간\n");
@@ -121,7 +135,7 @@ int main()
                 subSparse(sparseA, sparseB, &sparseC); // subtract sparse matrix
                 endTimer();
 
-                if (IS_PRINT)
+                if (IS_PRINTSPARSE)
                 {
                     printf("\n희소 행렬 A:\n");
                     printSparse(sparseA);
@@ -133,6 +147,18 @@ int main()
                     printSparse(sparseC);
                 }
 
+                if (IS_PRINTSPARSEMATRIX)
+                {
+                    printf("\n희소 행렬 A:\n");
+                    printSparseAsMatrix(sparseA);
+
+                    printf("\n희소 행렬 B:\n");
+                    printSparseAsMatrix(sparseB);
+
+                    printf("\n희소 행렬 C:\n");
+                    printSparseAsMatrix(sparseC);
+                }
+ 
                 printf("\n희소 행렬 뺄셈 시간\n");
                 printExecutionTime();
 
@@ -175,7 +201,7 @@ int main()
                 mulSparse(sparseA, sparseB, &sparseC);
                 endTimer();
 
-                if (IS_PRINT)
+                if (IS_PRINTSPARSE)
                 {
                     printf("\n희소 행렬 A:\n");
                     printSparse(sparseA);
@@ -185,6 +211,18 @@ int main()
 
                     printf("\n희소 행렬 C:\n");
                     printSparse(sparseC);
+                }
+                
+                if (IS_PRINTSPARSEMATRIX)
+                {
+                    printf("\n희소 행렬 A:\n");
+                    printSparseAsMatrix(sparseA);
+
+                    printf("\n희소 행렬 B:\n");
+                    printSparseAsMatrix(sparseB);
+
+                    printf("\n희소 행렬 C:\n");
+                    printSparseAsMatrix(sparseC);
                 }
 
                 printf("\n희소 행렬 곱셈 시간\n");
@@ -227,7 +265,7 @@ int main()
                 divSparse(sparseA, sparseB, &sparseC);
                 endTimer();
 
-                if (IS_PRINT)
+                if (IS_PRINTSPARSE)
                 {
                     printf("\n희소 행렬 A:\n");
                     printSparse(sparseA);
@@ -237,6 +275,18 @@ int main()
 
                     printf("\n희소 행렬 C:\n");
                     printSparse(sparseC);
+                }
+
+                if (IS_PRINTSPARSEMATRIX)
+                {
+                    printf("\n희소 행렬 A:\n");
+                    printSparseAsMatrix(sparseA);
+
+                    printf("\n희소 행렬 B:\n");
+                    printSparseAsMatrix(sparseB);
+
+                    printf("\n희소 행렬 C:\n");
+                    printSparseAsMatrix(sparseC);
                 }
 
                 printf("\n희소 행렬 나눗셈 시간\n");
@@ -260,7 +310,7 @@ int main()
                     printf("\n행렬 A:\n");
                     printMatrix(row, col, A);
 
-                    printf("\n전치 행렬 B:\n");
+                    printf("\n전치 행렬 A:\n");
                     printMatrix(col, row, B);
                 }
 
@@ -273,13 +323,22 @@ int main()
                 transposeSparse(sparseA, &sparseB);
                 endTimer();
 
-                if (IS_PRINT)
+                if (IS_PRINTSPARSE)
                 {
                     printf("\n희소 행렬 A:\n");
                     printSparse(sparseA);
 
-                    printf("\n희소 행렬 전치 행렬 B:\n");
+                    printf("\n희소 행렬 전치 A:\n");
                     printSparse(sparseB);
+                }
+
+                if (IS_PRINTSPARSEMATRIX)
+                {
+                    printf("\n희소 행렬 A:\n");
+                    printSparseAsMatrix(sparseA);
+
+                    printf("\n희소 행렬 전치 A:\n");
+                    printSparseAsMatrix(sparseB);
                 }
 
                 printf("\n희소 행렬 전치 행렬 변환 시간\n");
@@ -301,9 +360,18 @@ int main()
                 {
                     printf("\n행렬 A:\n");
                     printMatrix(row, col, A);
+                }
 
+                if (IS_PRINTSPARSE)
+                {
                     printf("\n희소 행렬 A:\n");
                     printSparse(sparseA);
+                }
+
+                if (IS_PRINTSPARSEMATRIX)
+                {
+                    printf("\n희소 행렬 A:\n");
+                    printSparseAsMatrix(sparseA);
                 }
 
                 printf("\n희소 행렬 변환 시간\n");
