@@ -230,14 +230,14 @@ void mulSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC)
 {
     if (sparseA[0].col != sparseB[0].row) 
     {
-        printf("행렬의 크기가 곱셈에 적합하지 않습니다.\n");
+        printf("Matrix multiplication is not possible\n");
         return;
     }
 
     *sparseC = (sparse *)malloc((sparseA[0].row * sparseB[0].row + 1) * sizeof(sparse));
     if (*sparseC == NULL) 
     {
-        printf("메모리 할당 실패\n");
+        printf("Memory allocation failed\n");
         exit(1);
     }
 
@@ -270,6 +270,30 @@ void printSparse(const sparse *sparseM)
     for (int i = 0; i <= sparseM[0].value; i++)
     {
         printf("%d %d %d\n", sparseM[i].row, sparseM[i].col, sparseM[i].value);
+    }
+}
+
+void printSparseAsMatrix(const sparse *sparseM)
+{
+    unsigned int row = sparseM[0].row;
+    unsigned int col = sparseM[0].col;
+    int valueIndex = 1;
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            if (valueIndex <= sparseM[0].value &&
+                sparseM[valueIndex].row == i && sparseM[valueIndex].col == j)
+            {
+                printf("%d ", sparseM[valueIndex].value);
+                valueIndex++;
+            }
+            else
+            {
+                printf("0 ");
+            }
+        }
+        printf("\n");
     }
 }
 
