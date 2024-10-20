@@ -42,8 +42,6 @@ void subSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC);
 void transposeMatrix(const unsigned int row, const unsigned int col, int *matrixA, int *matrixB);
 void transposeSparse(const sparse *sparseA, sparse **sparseB);
 
-void printSparseAsMatrix(const sparse *sparseMatrix);
-
 int main() 
 {
     int menu;
@@ -717,17 +715,17 @@ void mulSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC)
     {
         for (int n = 0; n < sparseB[0].row; n++)
         {
-            int testsum = 0;
-            for (int i = 1; i <= sparseA[0].value; i++)
+            int sum = 0;
+            for (int i = 1; i <= sparseA[0].value && sparseA[i].row <= m; i++)
             {
                 if (sparseA[i].row == m)
                 {
-                    testsum += sparseA[i].value * getValue(n, sparseA[i].col, sparseB);
+                    sum += sparseA[i].value * getValue(n, sparseA[i].col, sparseB);
                 }
             }
-            if (testsum != 0)
+            if (sum != 0)
             {
-                (*sparseC)[++((*sparseC)[0].value)] = (sparse){m, n, testsum};
+                (*sparseC)[++((*sparseC)[0].value)] = (sparse){m, n, sum};
             }
         }
     }
@@ -892,32 +890,4 @@ void transposeSparse(const sparse *sparseA, sparse **sparseB)
     }
 
     qsort(*sparseB + 1, sparseA[0].value, sizeof(sparse), compareSparse);
-}
-
-void printSparseAsMatrix(const sparse *sparseMatrix)
-{
-    unsigned int row = sparseMatrix[0].row; // 행렬의 행 개수
-    unsigned int col = sparseMatrix[0].col; // 행렬의 열 개수
-    int valueIndex = 1; // sparse 행렬의 유효한 값이 시작되는 인덱스
-
-    // 일반 행렬을 행과 열 순서대로 출력
-    for (int i = 0; i < row; i++)
-    {
-        for (int j = 0; j < col; j++)
-        {
-            if (valueIndex <= sparseMatrix[0].value &&
-                sparseMatrix[valueIndex].row == i && sparseMatrix[valueIndex].col == j)
-            {
-                // sparse 행렬에 저장된 값이 있으면 출력
-                printf("%d ", sparseMatrix[valueIndex].value);
-                valueIndex++;
-            }
-            else
-            {
-                // 값이 없는 경우 0을 출력
-                printf("0 ");
-            }
-        }
-        printf("\n");
-    }
 }
