@@ -16,7 +16,14 @@ void divMatrix(const unsigned int row, const unsigned int col, int *A, int *B, i
     {
         if (B[i] == 0)
         {
-            C[i] = -1; // Divide by zero
+            if (A[i] == 0)
+            {
+                C[i] = 0; // 0 / 0
+            }
+            else
+            {
+                C[i] = -1; // Divide by zero
+            }
         }
         else
         {

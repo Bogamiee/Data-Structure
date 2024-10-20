@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include "sparse.h"
 
-void addSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC) 
-{
+void addSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC) {
     *sparseC = (sparse *)malloc((sparseA[0].value + sparseB[0].value + 1) * sizeof(sparse));
-    if (*sparseC == NULL)
-    {
+    if (*sparseC == NULL) {
         printf("Memory allocation failed\n");
         exit(1);
     }
@@ -17,55 +16,29 @@ void addSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC)
 
     int m = 1, n = 1, k = 1;
 
-    while (m <= sparseA[0].value && n <= sparseB[0].value)
-    {
-        int indexA = sparseA[m].row * sparseA[0].col + sparseA[m].col;
-        int indexB = sparseB[n].row * sparseB[0].col + sparseB[n].col;
+    while (m <= sparseA[0].value || n <= sparseB[0].value) {
+        if (m > sparseA[0].value) {
+            (*sparseC)[k++] = sparseB[n++];
+        } else if (n > sparseB[0].value) {
+            (*sparseC)[k++] = sparseA[m++];
+        } else {
+            int indexA = sparseA[m].row * sparseA[0].col + sparseA[m].col;
+            int indexB = sparseB[n].row * sparseB[0].col + sparseB[n].col;
 
-        if (indexA < indexB)
-        {
-            (*sparseC)[k].row = sparseA[m].row;
-            (*sparseC)[k].col = sparseA[m].col;
-            (*sparseC)[k].value = sparseA[m].value;
-            m++;
-            k++;
-        }
-        else if (indexA > indexB)
-        {
-            (*sparseC)[k].row = sparseB[n].row;
-            (*sparseC)[k].col = sparseB[n].col;
-            (*sparseC)[k].value = sparseB[n].value;
-            n++;
-            k++;
-        }
-        else
-        {
-            (*sparseC)[k].row = sparseA[m].row;
-            (*sparseC)[k].col = sparseA[m].col;
-            (*sparseC)[k].value = sparseA[m].value + sparseB[n].value;
-            m++;
-            n++;
-            k++;
+            if (indexA < indexB) {
+                (*sparseC)[k++] = sparseA[m++];
+            } else if (indexA > indexB) {
+                (*sparseC)[k++] = sparseB[n++];
+            } else {
+                (*sparseC)[k].row = sparseA[m].row;
+                (*sparseC)[k].col = sparseA[m].col;
+                (*sparseC)[k].value = sparseA[m].value + sparseB[n].value;
+                m++;
+                n++;
+                k++;
+            }
         }
     }
-
-    while (m <= sparseA[0].value)
-    {
-        (*sparseC)[k].row = sparseA[m].row;
-        (*sparseC)[k].col = sparseA[m].col;
-        (*sparseC)[k].value = sparseA[m].value;
-        m++;
-        k++;
-    }
-    while (n <= sparseB[0].value)
-    {
-        (*sparseC)[k].row = sparseB[n].row;
-        (*sparseC)[k].col = sparseB[n].col;
-        (*sparseC)[k].value = sparseB[n].value;
-        n++;
-        k++;
-    }
-
     (*sparseC)[0].value = k - 1;
 }
 
@@ -133,7 +106,8 @@ void denseToSparse(const unsigned int row, const unsigned int col, const int *ma
 
 void divSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC) 
 {
-    *sparseC = (sparse *)malloc((sparseA[0].value + sparseB[0].value + 1) * sizeof(sparse));
+    int maxSize = sparseA[0].value > sparseB[0].value ? sparseA[0].value : sparseB[0].value;
+    *sparseC = (sparse *)malloc((maxSize + 1) * sizeof(sparse));
     if (*sparseC == NULL)
     {
         printf("Memory allocation failed\n");
@@ -142,63 +116,50 @@ void divSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC)
 
     (*sparseC)[0].row = sparseA[0].row;
     (*sparseC)[0].col = sparseA[0].col;
+    (*sparseC)[0].value = 0;
 
     int m = 1, n = 1, k = 1;
 
-    while (m <= sparseA[0].value && n <= sparseB[0].value)
+    while (m <= sparseA[0].value || n <= sparseB[0].value)
     {
-        int indexA = sparseA[m].row * sparseA[0].col + sparseA[m].col;
-        int indexB = sparseB[n].row * sparseB[0].col + sparseB[n].col;
+        int indexA = m <= sparseA[0].value ? sparseA[m].row * sparseA[0].col + sparseA[m].col : INT_MAX;
+        int indexB = n <= sparseB[0].value ? sparseB[n].row * sparseB[0].col + sparseB[n].col : INT_MAX;
 
-        if (indexA < indexB)
+        if (indexA == indexB)
         {
-            (*sparseC)[k].row = sparseA[m].row;
-            (*sparseC)[k].col = sparseA[m].col;
-            (*sparseC)[k].value = sparseA[m].value; 
-            m++;
-            k++;
-        }
-        else if (indexA > indexB)
-        {
-            (*sparseC)[k].row = sparseB[n].row;
-            (*sparseC)[k].col = sparseB[n].col;
-            (*sparseC)[k].value = 0;
-            n++;
-            k++;
-        }
-        else
-        {
-            if (sparseB[n].value != 0) 
+            if (sparseB[n].value != 0)
             {
-                (*sparseC)[k].row = sparseA[m].row;
-                (*sparseC)[k].col = sparseA[m].col;
-                (*sparseC)[k].value = sparseA[m].value / sparseB[n].value;
+                int result = sparseA[m].value / sparseB[n].value;
+                if (result != 0)
+                {
+                    (*sparseC)[k].row = sparseA[m].row;
+                    (*sparseC)[k].col = sparseA[m].col;
+                    (*sparseC)[k].value = result;
+                    k++;
+                }
             }
             else
             {
-                (*sparseC)[k].value = -1; // Divide by zero
+                (*sparseC)[k].row = sparseA[m].row;
+                (*sparseC)[k].col = sparseA[m].col;
+                (*sparseC)[k].value = -1;
+                k++;
             }
             m++;
             n++;
-            k++;
         }
-    }
-
-    while (m <= sparseA[0].value)
-    {
-        (*sparseC)[k].row = sparseA[m].row;
-        (*sparseC)[k].col = sparseA[m].col;
-        (*sparseC)[k].value = sparseA[m].value;
-        m++;
-        k++;
-    }
-    while (n <= sparseB[0].value)
-    {
-        (*sparseC)[k].row = sparseB[n].row;
-        (*sparseC)[k].col = sparseB[n].col;
-        (*sparseC)[k].value = 0;
-        n++;
-        k++;
+        else if (indexA < indexB)
+        {
+            (*sparseC)[k].row = sparseA[m].row;
+            (*sparseC)[k].col = sparseA[m].col;
+            (*sparseC)[k].value = -1;
+            k++;
+            m++;
+        }
+        else
+        {
+            n++;
+        }
     }
 
     (*sparseC)[0].value = k - 1;
@@ -254,7 +215,11 @@ void mulSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC)
             {
                 if (sparseA[i].row == m)
                 {
-                    sum += sparseA[i].value * getValue(n, sparseA[i].col, sparseB);
+                    int valueB = getValue(n, sparseA[i].col, sparseB);
+                    if (valueB != 0)
+                    {
+                        sum += sparseA[i].value * valueB;
+                    }
                 }
             }
             if (sum != 0)
@@ -297,11 +262,9 @@ void printSparseAsMatrix(const sparse *sparseM)
     }
 }
 
-void subSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC) 
-{
+void subSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC) {
     *sparseC = (sparse *)malloc((sparseA[0].value + sparseB[0].value + 1) * sizeof(sparse));
-    if (*sparseC == NULL)
-    {
+    if (*sparseC == NULL) {
         printf("Memory allocation failed\n");
         exit(1);
     }
@@ -311,55 +274,36 @@ void subSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC)
 
     int m = 1, n = 1, k = 1;
 
-    while (m <= sparseA[0].value && n <= sparseB[0].value)
-    {
-        int indexA = sparseA[m].row * sparseA[0].col + sparseA[m].col;
-        int indexB = sparseB[n].row * sparseB[0].col + sparseB[n].col;
-
-        if (indexA < indexB)
-        {
-            (*sparseC)[k].row = sparseA[m].row;
-            (*sparseC)[k].col = sparseA[m].col;
-            (*sparseC)[k].value = sparseA[m].value;
-            m++;
-            k++;
-        }
-        else if (indexA > indexB)
-        {
-            (*sparseC)[k].row = sparseB[n].row;
-            (*sparseC)[k].col = sparseB[n].col;
+    while (m <= sparseA[0].value || n <= sparseB[0].value) {
+        if (m > sparseA[0].value) {
+            (*sparseC)[k] = sparseB[n];
             (*sparseC)[k].value = -sparseB[n].value;
-            n++;
             k++;
-        }
-        else
-        {
-            (*sparseC)[k].row = sparseA[m].row;
-            (*sparseC)[k].col = sparseA[m].col;
-            (*sparseC)[k].value = sparseA[m].value - sparseB[n].value;
-            m++;
             n++;
-            k++;
+        } else if (n > sparseB[0].value) {
+            (*sparseC)[k++] = sparseA[m++];
+        } else {
+            int indexA = sparseA[m].row * sparseA[0].col + sparseA[m].col;
+            int indexB = sparseB[n].row * sparseB[0].col + sparseB[n].col;
+
+            if (indexA < indexB) {
+                (*sparseC)[k++] = sparseA[m++];
+            } else if (indexA > indexB) {
+                (*sparseC)[k] = sparseB[n];
+                (*sparseC)[k].value = -sparseB[n].value;
+                k++;
+                n++;
+            } else {
+                (*sparseC)[k].row = sparseA[m].row;
+                (*sparseC)[k].col = sparseA[m].col;
+                (*sparseC)[k].value = sparseA[m].value - sparseB[n].value;
+                m++;
+                n++;
+                k++;
+            }
         }
     }
 
-    while (m <= sparseA[0].value)
-    {
-        (*sparseC)[k].row = sparseA[m].row;
-        (*sparseC)[k].col = sparseA[m].col;
-        (*sparseC)[k].value = sparseA[m].value;
-        m++;
-        k++;
-    }
-    while (n <= sparseB[0].value)
-    {
-        (*sparseC)[k].row = sparseB[n].row;
-        (*sparseC)[k].col = sparseB[n].col;
-        (*sparseC)[k].value = -sparseB[n].value;
-        n++;
-        k++;
-    }
-    
     (*sparseC)[0].value = k - 1;
 }
 

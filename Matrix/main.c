@@ -24,14 +24,24 @@ int main()
     do 
     {
         printf("행렬의 0일 확률을 입력하세요(0 ~ 100): ");
-        scanf("%d", &percent);
+        if (scanf("%d", &percent) != 1)
+        {
+            printf("잘못된 입력입니다.\n\n");
+            while (getchar() != '\n');
+            continue;
+        }
     } while (percent < 0 || percent > 100);
     printf("\n");
 
     do 
     {
         printMenu();
-        scanf("%d", &menu);
+        if (scanf("%d", &menu) != 1)
+        {
+            printf("잘못된 입력입니다.\n\n");
+            while (getchar() != '\n');
+            continue;
+        }
 
         switch (menu)
         {
