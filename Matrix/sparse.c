@@ -187,15 +187,41 @@ int getValue(const unsigned int row, const unsigned int col, const sparse *spars
     return 0;
 }
 
+int getValueDiv(const unsigned int row, const unsigned int col, const sparse *sparseM)
+{
+    int left = 1;
+    int right = sparseM[0].value;
+
+    while (left <= right)
+    {
+        int mid = (left + right) / 2;
+
+        if (sparseM[mid].row == row && sparseM[mid].col == col)
+        {
+            return sparseM[mid].value;
+        }
+        else if (sparseM[mid].row < row || (sparseM[mid].row == row && sparseM[mid].col < col))
+        {
+            left = mid + 1;  // Search right half
+        }
+        else
+        {
+            right = mid - 1;  // Search left half
+        }
+    }
+
+    return 0;  // When the value is not found
+}
+
 void mulSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC) 
 {
-    if (sparseA[0].row != sparseB[0].col) 
+    if (sparseA[0].col != sparseB[0].row) 
     {
         printf("Matrix multiplication is not possible\n");
         return;
     }
 
-    *sparseC = (sparse *)malloc((sparseA[0].col * sparseB[0].row + 1) * sizeof(sparse));
+    *sparseC = (sparse *)malloc((sparseA[0].row * sparseB[0].row + 1) * sizeof(sparse));
     if (*sparseC == NULL) 
     {
         printf("Memory allocation failed\n");
@@ -203,30 +229,71 @@ void mulSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC)
     }
 
     (*sparseC)[0].row = sparseA[0].row;
-    (*sparseC)[0].col = sparseB[0].col;
+    (*sparseC)[0].col = sparseB[0].row;
     (*sparseC)[0].value = 0;
 
     for (int m = 0; m < sparseA[0].row; m++)
     {
-        for (int n = 0; n < sparseB[0].col; n++)
+        for (int n = 0; n < sparseB[0].row; n++)
         {
             int sum = 0;
-            for (int k = 0; k < sparseA[0].col; k++)
+            for (int i = 1; i <= sparseA[0].value && sparseA[i].row <= m; i++)
             {
-                int valueA = getValue(m, k, sparseA);
-                if (valueA == 0)
+                if (sparseA[i].row == m)
                 {
-                    continue;
+                    int valueB = getValue(n, sparseA[i].col, sparseB);
+                    if (valueB != 0)
+                    {
+                        sum += sparseA[i].value * valueB;
+                    }
                 }
-                sum += valueA * getValue(k, n, sparseB);
             }
             if (sum != 0)
             {
-                int value = (*sparseC)[0].value + 1;
-                (*sparseC)[0].value++;
-                (*sparseC)[value].row = m;
-                (*sparseC)[value].col = n;
-                (*sparseC)[value].value = sum;
+                (*sparseC)[++((*sparseC)[0].value)] = (sparse){m, n, sum};
+            }
+        }
+    }
+}
+
+void mulSparseDiv(const sparse *sparseA, const sparse *sparseB, sparse **sparseC) 
+{
+    if (sparseA[0].col != sparseB[0].row) 
+    {
+        printf("Matrix multiplication is not possible\n");
+        return;
+    }
+
+    *sparseC = (sparse *)malloc((sparseA[0].row * sparseB[0].row + 1) * sizeof(sparse));
+    if (*sparseC == NULL) 
+    {
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+
+    (*sparseC)[0].row = sparseA[0].row;
+    (*sparseC)[0].col = sparseB[0].row;
+    (*sparseC)[0].value = 0;
+
+    for (int m = 0; m < sparseA[0].row; m++)
+    {
+        for (int n = 0; n < sparseB[0].row; n++)
+        {
+            int sum = 0;
+            for (int i = 1; i <= sparseA[0].value && sparseA[i].row <= m; i++)
+            {
+                if (sparseA[i].row == m)
+                {
+                    int valueB = getValueDiv(n, sparseA[i].col, sparseB);
+                    if (valueB != 0)
+                    {
+                        sum += sparseA[i].value * valueB;
+                    }
+                }
+            }
+            if (sum != 0)
+            {
+                (*sparseC)[++((*sparseC)[0].value)] = (sparse){m, n, sum};
             }
         }
     }

@@ -10,6 +10,7 @@
 #define IS_PRINT 0 // 1 if print matrix, 0 if not
 #define IS_PRINTSPARSE 0 // 1 if print sparse matrix, 0 if not
 #define IS_PRINTSPARSEMATRIX 0 // 1 if print sparse matrix as matrix, 0 if not
+#define IS_DIVIDEANDCONQUER 1 // 1 if use divide and conquer, 0 if not in multiplication
 
 int percent = 50;
 
@@ -205,9 +206,18 @@ int main()
                 denseToSparse(row, col, A, &sparseA);
                 denseToSparse(row, col, B, &sparseB);
 
-                startTimer();
-                mulSparse(sparseA, sparseB, &sparseC);
-                endTimer();
+                if (IS_DIVIDEANDCONQUER)
+                {
+                    startTimer();
+                    mulSparseDiv(sparseA, sparseB, &sparseC);
+                    endTimer();
+                }
+                else
+                {
+                    startTimer();
+                    mulSparse(sparseA, sparseB, &sparseC);
+                    endTimer();
+                }
 
                 if (IS_PRINTSPARSE)
                 {

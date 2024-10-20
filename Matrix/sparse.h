@@ -14,7 +14,9 @@ void denseToSparse(const unsigned int row, const unsigned int col, const int *ma
 void divSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC);
 void freeSparse(sparse **sparseM);
 int getValue(const unsigned int row, const unsigned int col, const sparse *sparseM);
+int getValueDiv(const unsigned int row, const unsigned int col, const sparse *sparseM);
 void mulSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC);
+void mulSparseDiv(const sparse *sparseA, const sparse *sparseB, sparse **sparseC);
 void printSparse(const sparse *sparseM);
 void printSparseAsMatrix(const sparse *sparseM);
 void subSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC);
