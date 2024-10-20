@@ -4,7 +4,7 @@
 #include <math.h>
 
 #define IS_SQUARE 1 // 1 if square matrix, 0 if not
-#define IS_PRINT 1 // 1 if print matrix, 0 if not
+#define IS_PRINT 0 // 1 if print matrix, 0 if not
 
 int percent = 50;
 clock_t start, end;
@@ -19,6 +19,7 @@ typedef struct Sparse
 
 void addMatrix(const unsigned int row, const unsigned int col, int *A, int *B, int *C);
 void addSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC);
+int compareSparse(const void *a, const void *b);
 void denseToSparse(const unsigned int row, const unsigned int col, const int *matrix, sparse **sparseMatrix);
 void divMatrix(const unsigned int row, const unsigned int col, int *A, int *B, int *C);
 void divSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC);
@@ -27,7 +28,10 @@ void fillMatrix(const unsigned int row, const unsigned int col, int *matrix, con
 void freeMatrix(int **matrix);
 void freeSparse(sparse **sparseM);
 void getMatrixSize(unsigned int *row, unsigned int *col);
+int getValue(const unsigned int row, const unsigned int col, const sparse *sparseM);
 void makeMatrix(const unsigned int row, const unsigned int col, int **matrix);
+void mulMatrix(const unsigned int row, const unsigned int col, int *A, int *B, int *C);
+void mulSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC);
 void printExecutionTime();
 void printMatrix(const unsigned int row, const unsigned int col, const int *matrix);
 void printMenu();
@@ -37,6 +41,8 @@ void subMatrix(const unsigned int row, const unsigned int col, int *A, int *B, i
 void subSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC);
 void transposeMatrix(const unsigned int row, const unsigned int col, int *matrixA, int *matrixB);
 void transposeSparse(const sparse *sparseA, sparse **sparseB);
+
+void printSparseAsMatrix(const sparse *sparseMatrix);
 
 int main() 
 {
@@ -165,12 +171,58 @@ int main()
 
                 break;
             case 3: // multiplication
-                printf("행렬 A:\n");
                 getMatrixSize(&row, &col);
+
                 makeMatrix(row, col, &A);
-                printf("행렬 B:\n");
-                getMatrixSize(&row, &col);
                 makeMatrix(row, col, &B);
+                makeMatrix(row, col, &C);
+
+                fillMatrix(row, col, A, percent);
+                fillMatrix(row, col, B, percent);
+
+                startTimer();
+                mulMatrix(row, col, A, B, C);
+                endTimer();
+
+                if (IS_PRINT)
+                {
+                    printf("\n행렬 A:\n");
+                    printMatrix(row, col, A);
+
+                    printf("\n행렬 B:\n");
+                    printMatrix(row, col, B);
+
+                    printf("\n행렬 C:\n");
+                    printMatrix(row, col, C);
+                }
+                
+                printf("\n일반 행렬 곱셈 시간\n");
+                printExecutionTime();
+
+                denseToSparse(row, col, A, &sparseA);
+                denseToSparse(row, col, B, &sparseB);
+
+                transposeSparse(sparseB, &sparseB);
+
+                startTimer();
+                mulSparse(sparseA, sparseB, &sparseC);
+                endTimer();
+
+                if (IS_PRINT)
+                {
+                    printf("\n희소 행렬 A:\n");
+                    printSparse(sparseA);
+
+                    printf("\n희소 행렬 B:\n");
+                    printSparse(sparseB);
+
+                    printf("\n희소 행렬 C:\n");
+                    printSparse(sparseC);
+                }
+
+                printf("\n희소 행렬 곱셈 시간\n");
+                printExecutionTime();
+
                 break;
             case 4: // division
                 getMatrixSize(&row, &col);
@@ -386,6 +438,30 @@ void addSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC)
     (*sparseC)[0].value = k - 1;
 }
 
+int compareSparse(const void *a, const void *b)
+{
+    sparse *A = (sparse *)a;
+    sparse *B = (sparse *)b;
+
+    if (A->row < B->row)
+    {
+        return -1;
+    }
+    if (A->row > B->row)
+    {
+        return 1;
+    }
+    if (A->col < B->col)
+    {
+        return -1;
+    }
+    if (A->col > B->col)
+    {
+        return 1;
+    }
+    return 0;
+}
+
 void denseToSparse(const unsigned int row, const unsigned int col, const int *matrix, sparse **sparseMatrix) 
 {
     int count = 0;
@@ -580,6 +656,18 @@ void getMatrixSize(unsigned int *row, unsigned int *col)
     }
 }
 
+int getValue(const unsigned int row, const unsigned int col, const sparse *sparseM)
+{
+    for (int i = 1; i <= sparseM[0].value; i++)
+    {
+        if (sparseM[i].row == row && sparseM[i].col == col)
+        {
+            return sparseM[i].value;
+        }
+    }
+    return 0;
+}
+
 void makeMatrix(const unsigned int row, const unsigned int col, int **matrix)
 {
     *matrix = (int *)calloc(row * col, sizeof(int)); // Allocate memory, Initialize to 0
@@ -590,6 +678,61 @@ void makeMatrix(const unsigned int row, const unsigned int col, int **matrix)
         exit(1);
     }
 }
+
+void mulMatrix(const unsigned int row, const unsigned int col, int *A, int *B, int *C) 
+{
+    for (int m = 0; m < row; m++)
+    {
+        for (int n = 0; n < col; n++)
+        {
+            C[m * col + n] = 0;
+            for (int k = 0; k < col; k++)
+            {
+                C[m * col + n] += A[m * col + k] * B[k * col + n];
+            }
+        }
+    }
+}
+
+void mulSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC) 
+{
+    if (sparseA[0].col != sparseB[0].row) 
+    {
+        printf("행렬의 크기가 곱셈에 적합하지 않습니다.\n");
+        return;
+    }
+
+    *sparseC = (sparse *)malloc((sparseA[0].row * sparseB[0].row + 1) * sizeof(sparse));
+    if (*sparseC == NULL) 
+    {
+        printf("메모리 할당 실패\n");
+        exit(1);
+    }
+
+    (*sparseC)[0].row = sparseA[0].row;
+    (*sparseC)[0].col = sparseB[0].row;
+    (*sparseC)[0].value = 0;
+
+    for (int m = 0; m < sparseA[0].row; m++)
+    {
+        for (int n = 0; n < sparseB[0].row; n++)
+        {
+            int testsum = 0;
+            for (int i = 1; i <= sparseA[0].value; i++)
+            {
+                if (sparseA[i].row == m)
+                {
+                    testsum += sparseA[i].value * getValue(n, sparseA[i].col, sparseB);
+                }
+            }
+            if (testsum != 0)
+            {
+                (*sparseC)[++((*sparseC)[0].value)] = (sparse){m, n, testsum};
+            }
+        }
+    }
+}
+
 
 void printExecutionTime()
 {
@@ -746,5 +889,35 @@ void transposeSparse(const sparse *sparseA, sparse **sparseB)
         (*sparseB)[i].row = sparseA[i].col;
         (*sparseB)[i].col = sparseA[i].row;
         (*sparseB)[i].value = sparseA[i].value;
+    }
+
+    qsort(*sparseB + 1, sparseA[0].value, sizeof(sparse), compareSparse);
+}
+
+void printSparseAsMatrix(const sparse *sparseMatrix)
+{
+    unsigned int row = sparseMatrix[0].row; // 행렬의 행 개수
+    unsigned int col = sparseMatrix[0].col; // 행렬의 열 개수
+    int valueIndex = 1; // sparse 행렬의 유효한 값이 시작되는 인덱스
+
+    // 일반 행렬을 행과 열 순서대로 출력
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            if (valueIndex <= sparseMatrix[0].value &&
+                sparseMatrix[valueIndex].row == i && sparseMatrix[valueIndex].col == j)
+            {
+                // sparse 행렬에 저장된 값이 있으면 출력
+                printf("%d ", sparseMatrix[valueIndex].value);
+                valueIndex++;
+            }
+            else
+            {
+                // 값이 없는 경우 0을 출력
+                printf("0 ");
+            }
+        }
+        printf("\n");
     }
 }
