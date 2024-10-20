@@ -16,6 +16,7 @@ void freeSparse(sparse **sparseM);
 int getValue(const unsigned int row, const unsigned int col, const sparse *sparseM);
 void mulSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC);
 void printSparse(const sparse *sparseM);
+void printSparseAsMatrix(const sparse *sparseM);
 void subSparse(const sparse *sparseA, const sparse *sparseB, sparse **sparseC);
 void transposeSparse(const sparse *sparseA, sparse **sparseB);
 
