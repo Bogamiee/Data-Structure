@@ -7,9 +7,9 @@
 #include "timer.h"
 #include "sparse.h"
 
-#define IS_PRINT 1 // 1 if print matrix, 0 if not
+#define IS_PRINT 0 // 1 if print matrix, 0 if not
 #define IS_PRINTSPARSE 0 // 1 if print sparse matrix, 0 if not
-#define IS_PRINTSPARSEMATRIX 1 // 1 if print sparse matrix as matrix, 0 if not
+#define IS_PRINTSPARSEMATRIX 0 // 1 if print sparse matrix as matrix, 0 if not
 
 int percent = 50;
 
@@ -204,8 +204,6 @@ int main()
 
                 denseToSparse(row, col, A, &sparseA);
                 denseToSparse(row, col, B, &sparseB);
-
-                transposeSparse(sparseB, &sparseB);
 
                 startTimer();
                 mulSparse(sparseA, sparseB, &sparseC);
