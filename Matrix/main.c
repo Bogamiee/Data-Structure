@@ -10,7 +10,7 @@
 #define IS_PRINT 0 // 1 if print matrix, 0 if not
 #define IS_PRINTSPARSE 0 // 1 if print sparse matrix, 0 if not
 #define IS_PRINTSPARSEMATRIX 0 // 1 if print sparse matrix as matrix, 0 if not
-#define IS_DIVIDEANDCONQUER 1 // 1 if use divide and conquer, 0 if not in multiplication
+#define IS_DIVIDEANDCONQUER 0 // 1 if use divide and conquer, 0 if not in multiplication
 
 int percent = 50;
 
@@ -183,7 +183,7 @@ int main()
 
                 fillMatrix(row, col, A, percent);
                 fillMatrix(row, col, B, percent);
-
+/*
                 startTimer();
                 mulMatrix(row, col, A, B, C);
                 endTimer();
@@ -202,7 +202,7 @@ int main()
                 
                 printf("\n일반 행렬 곱셈 시간\n");
                 printExecutionTime();
-
+*/
                 denseToSparse(row, col, A, &sparseA);
                 denseToSparse(row, col, B, &sparseB);
 
