@@ -72,5 +72,4 @@ void ListPolynomial::display() const {
         current = current->next;
     }
     if (first) cout << "0";
-    cout << endl;
 }

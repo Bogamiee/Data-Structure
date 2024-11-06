@@ -1,5 +1,6 @@
 #include <iostream>
 #include "linkedPolynomial.h"
+#include "TimeMsr.h"
 using namespace std;
 
 int main() {
@@ -29,7 +30,12 @@ int main() {
     }
 
     // 두 다항식의 덧셈
-    ListPolynomial sumList = polyList1.add(polyList2);
+    ListPolynomial sumList;
+    TimeMsr timer;
+
+    timer.measureExecutionTime([&]() {
+        sumList = polyList1.add(polyList2);
+    });
 
     // 결과 출력
     cout << "polyList1: ";
@@ -38,6 +44,7 @@ int main() {
     polyList2.display();
     cout << "sumList (polyList1 + polyList2): ";
     sumList.display();
+    timer.printExecutionTime();
 
     return 0;
 }

@@ -1,9 +1,10 @@
 #include <iostream>
-#include "Polynomial.h"
+#include "polynomial.h"
+#include "TimeMsr.h"
 using namespace std;
 
 int main() {
-    Polynomial poly1, poly2;
+    Polynomial poly1, poly2, sum, diff;
 
     int n, coeff, exp;
 
@@ -25,15 +26,23 @@ int main() {
         poly2.addTerm(coeff, exp);
     }
 
+    TimeMsr timer;
+
     // 덧셈 결과 출력
-    cout << "Addition of the polynomials:\n";
-    Polynomial sum = poly1.add(poly2);
+    cout << "\nAddition of the polynomials:\n";
+    timer.measureExecutionTime([&]() {
+        sum = poly1.add(poly2);
+    });
     sum.display();
+    timer.printExecutionTime();
 
     // 뺄셈 결과 출력
-    cout << "Subtraction of the polynomials:\n";
-    Polynomial diff = poly1.subtract(poly2);
+    cout << "\nSubtraction of the polynomials:\n";
+    timer.measureExecutionTime([&]() {
+        diff = poly1.subtract(poly2);
+    });
     diff.display();
+    timer.printExecutionTime();
 
     return 0;
 }

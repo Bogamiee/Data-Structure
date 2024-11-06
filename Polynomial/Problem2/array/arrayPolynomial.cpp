@@ -8,7 +8,7 @@ using namespace std;
 ArrayPolynomial::ArrayPolynomial(int maxDegree) : coefficients(maxDegree + 1, 0) {}
 
 void ArrayPolynomial::setTerm(int coefficient, int exponent) {
-    if (exponent >= 0 && exponent < coefficients.size()) {
+    if (exponent >= 0 && exponent < (int)coefficients.size()) {
         coefficients[exponent] = coefficient;
     }
 }
@@ -18,8 +18,8 @@ ArrayPolynomial ArrayPolynomial::add(const ArrayPolynomial& other) const {
     ArrayPolynomial result(maxDegree - 1);
 
     for (int i = 0; i < maxDegree; ++i) {
-        int coeffA = i < coefficients.size() ? coefficients[i] : 0;
-        int coeffB = i < other.coefficients.size() ? other.coefficients[i] : 0;
+        int coeffA = i < (int)coefficients.size() ? coefficients[i] : 0;
+        int coeffB = i < (int)other.coefficients.size() ? other.coefficients[i] : 0;
         result.setTerm(coeffA + coeffB, i);
     }
     return result;
@@ -43,6 +43,5 @@ void ArrayPolynomial::display() const {
         }
     }
     if (first) cout << "0";
-    cout << endl;
 }
 

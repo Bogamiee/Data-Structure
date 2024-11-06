@@ -1,6 +1,6 @@
 #include <iostream>
 #include <algorithm>
-#include "Polynomial.h"
+#include "polynomial.h"
 using namespace std;
 
 // 동일 지수의 항들을 합산하는 메서드
@@ -55,5 +55,4 @@ void Polynomial::display() const {
         cout << abs(terms[i].coefficient);
         if (terms[i].exponent != 0) cout << "x^" << terms[i].exponent;
     }
-    cout << endl;
 }

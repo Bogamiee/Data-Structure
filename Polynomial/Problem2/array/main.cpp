@@ -1,36 +1,39 @@
 #include <iostream>
 #include "arrayPolynomial.h"
+#include "TimeMsr.h"
 using namespace std;
 
 
 int main() {
-    int n, coeff, exp;
-
-    cout << "Array-based Polynomial:" << endl;
-
-    ArrayPolynomial polyArray1(5);
-    ArrayPolynomial polyArray2(5);
+    int a, b, coeff, exp;
+    TimeMsr timer;
 
     // 첫 번째 다항식 입력
     cout << "Enter the number of terms in the first polynomial: ";
-    cin >> n;
+    cin >> a;
+    ArrayPolynomial polyArray1(a);
     cout << "Enter terms (coefficient exponent) for the first polynomial:\n";
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < a; ++i) {
         cin >> coeff >> exp;
         polyArray1.setTerm(coeff, exp);
     }
 
     // 두 번째 다항식 입력
     cout << "Enter the number of terms in the second polynomial: ";
-    cin >> n;
+    cin >> b;
+    ArrayPolynomial polyArray2(b);
     cout << "Enter terms (coefficient exponent) for the second polynomial:\n";
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < b; ++i) {
         cin >> coeff >> exp;
         polyArray2.setTerm(coeff, exp);
     }
 
+    ArrayPolynomial sumArray(a + b);
+
     // 두 다항식의 덧셈
-    ArrayPolynomial sumArray = polyArray1.add(polyArray2);
+    timer.measureExecutionTime([&]{
+        sumArray = polyArray1.add(polyArray2);
+    });
     
     // 결과 출력
     cout << "polyArray1: ";
@@ -39,6 +42,7 @@ int main() {
     polyArray2.display();
     cout << "sumArray (polyArray1 + polyArray2): ";
     sumArray.display();
+    timer.printExecutionTime();
 
     return 0;
 }

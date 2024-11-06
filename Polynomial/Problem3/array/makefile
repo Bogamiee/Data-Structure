@@ -7,8 +7,8 @@ LDFLAGS =
 TARGET = main
 
 # 소스 파일과 헤더 파일
-SRCS = main.cpp arrayPolynomial.cpp
-DEPS = arrayPolynomial.h
+SRCS = main.cpp arrayPolynomial.cpp TimeMsr.cpp
+DEPS = arrayPolynomial.h TimeMsr.h
 
 # 오브젝트 파일 목록 (SRCS의 확장자를 .cpp에서 .o로 변경)
 OBJS = $(SRCS:.cpp=.o)
