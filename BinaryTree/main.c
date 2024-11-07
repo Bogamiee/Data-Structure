@@ -30,6 +30,10 @@ int main() {
     postfixOrder(root);
     printf("\n");
 
+    printf("Level order: ");
+    levelOrder(root);
+    printf("\n");
+
     deleteTree(root);
 
     return 0;

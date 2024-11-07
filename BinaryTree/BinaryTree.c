@@ -1,6 +1,7 @@
 // BinaryTree.c
 
 #include "Stack.h"
+#include "Queue.h"
 #include "BinaryTree.h"
 
 Node* createNode(char data) {
@@ -111,11 +112,18 @@ bool isOperator(char c) { // 연산자인지 확인
     return c == '+' || c == '-' || c == '*' || c == '/';
 }
 
+// 괄호를 포함한 중위 표기법 출력
 void infixOrder(Node* root) {
     if (root != NULL) {
+        if (isOperator(root->data)) {
+            printf("(");
+        }
         infixOrder(root->left);
         printf("%c", root->data);
         infixOrder(root->right);
+        if (isOperator(root->data)) {
+            printf(")");
+        }
     }
 }
 
@@ -132,6 +140,28 @@ void postfixOrder(Node* root) {
         postfixOrder(root->left);
         postfixOrder(root->right);
         printf("%c", root->data);
+    }
+}
+
+void levelOrder(Node* root) {
+    if (root == NULL) {
+        return;
+    }
+
+    Queue q;
+    Node* node;
+    initQueue(&q);
+    enqueue(&q, root);
+
+    while (!isQueueEmpty(&q)) {
+        node = dequeue(&q);
+        printf("%c", node->data);
+        if (node->left != NULL) {
+            enqueue(&q, node->left);
+        }
+        if (node->right != NULL) {
+            enqueue(&q, node->right);
+        }
     }
 }
 

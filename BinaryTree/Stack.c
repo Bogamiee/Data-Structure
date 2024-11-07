@@ -4,7 +4,7 @@
 
 void initStack(Stack *s) {
     s->top = -1;
-    s->capacity = 1;
+    s->capacity = 16;
     s->data = (void**)malloc(sizeof(void*) * s->capacity);
     if (s->data == NULL) {
         printf("Memory allocation failed in initStack()\n");

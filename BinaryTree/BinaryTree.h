@@ -18,6 +18,7 @@ bool isOperator(char c);
 void infixOrder(Node* root);
 void prefixOrder(Node* root);
 void postfixOrder(Node* root);
+void levelOrder(Node* root);
 void deleteTree(Node* root);
 
 #endif

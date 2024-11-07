@@ -3,9 +3,9 @@ CC = gcc
 CFLAGS = -Wall -g
 
 # 파일 설정
-SRCS = main.c BinaryTree.c Stack.c
+SRCS = main.c BinaryTree.c Stack.c Queue.c
 OBJS = $(SRCS:.c=.o)
-DEPS = BinaryTree.h Stack.h
+DEPS = BinaryTree.h Stack.h Queue.h
 TARGET = main
 
 # 최종 실행 파일
