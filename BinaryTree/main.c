@@ -4,9 +4,12 @@
 #include "BinaryTree.h"
 
 int main() {
-    char infix[] = "(2+3)*4+9";
+    char infix[100] = "";
     char postfix[100] = "";
     Node *root;
+
+    printf("Enter an infix expression: ");
+    scanf("%s", infix);
     
     infixToPostfix(infix, postfix);
 
