@@ -43,7 +43,9 @@ void* pop(Stack* s) {
         fprintf(stderr, "Stack is empty in pop()\n");
         exit(1);
     }
-    else return s->data[s->top--];
+    else {
+        return s->data[s->top--];
+    }
 }
 
 void* peek(Stack* s) {
@@ -67,5 +69,5 @@ void deleteStack(Stack *s) {
         free(s->data[i]);
     }
     free(s->data);
-    s->top = NULL;
+    s->top = -1;
 }

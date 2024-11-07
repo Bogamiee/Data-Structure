@@ -16,12 +16,8 @@ Node* createNode(char data) {
 }
 
 void insertNode(Node* parent, Node* right, Node* left) {
-    if (parent->left == NULL) {
-        parent->left = left;
-    }
-    if (parent->right == NULL) {
-        parent->right = right;
-    }
+    parent->left = left;
+    parent->right = right;
 }
 
 void deleteNode(Node* node) {
@@ -34,27 +30,31 @@ Node* expressionTree(char* postfix) {
     Node *parent, *left, *right;
     initStack(&s);
 
-    printf("%s", postfix);
     for (int i = 0; postfix[i] != '\0'; i++) {
         c = postfix[i];
 
         if (!isOperator(c)) {
-            pushChar(&s, c);
+            pushNode(&s, createNode(c));
         }
         else {
             parent = createNode(c);
-            right = createNode(*(char*)pop(&s));
-            left = createNode(*(char*)pop(&s));
+            right = (Node*)pop(&s);
+            left = (Node*)pop(&s);
             insertNode(parent, right, left);
             pushNode(&s, parent);
         }
     }
+
+    Node* root = (Node*)pop(&s);
+    deleteStack(&s);
+    return root;
 }
 
 void infixToPostfix(char* infix, char* postfix) {
     Stack s;
     int j = 0;
     char c;
+    char* cPtr;
     initStack(&s);
 
     for (int i = 0; infix[i] != '\0'; i++) {
@@ -62,7 +62,9 @@ void infixToPostfix(char* infix, char* postfix) {
 
         if (isOperator(c)) {
             while (!isEmpty(&s) && precedence(*(char*)peek(&s)) >= precedence(c)) {
-                postfix[j++] = *(char*)pop(&s);
+                cPtr = (char*)pop(&s);
+                postfix[j++] = *cPtr;
+                free(cPtr);
             }
             pushChar(&s, c);
         }
@@ -71,18 +73,22 @@ void infixToPostfix(char* infix, char* postfix) {
         }
         else if (c == ')') {
             while (*(char*)peek(&s) != '(') {
-                postfix[j++] = *(char*)pop(&s);
+                cPtr = (char*)pop(&s);
+                postfix[j++] = *cPtr;
+                free(cPtr);
             }
-            pop(&s);
+            free(pop(&s));
         }
         else {
             postfix[j++] = c;
         }
     }
     while (!isEmpty(&s)) {
-        postfix[j++] = *(char*)pop(&s);
+        cPtr = (char*)pop(&s);
+        postfix[j++] = *cPtr;
+        free(cPtr);
     }
-    delete(&s);
+    deleteStack(&s);
 }
 
 int precedence(char c) {
@@ -103,4 +109,36 @@ int precedence(char c) {
 
 bool isOperator(char c) { // 연산자인지 확인
     return c == '+' || c == '-' || c == '*' || c == '/';
+}
+
+void infixOrder(Node* root) {
+    if (root != NULL) {
+        infixOrder(root->left);
+        printf("%c", root->data);
+        infixOrder(root->right);
+    }
+}
+
+void prefixOrder(Node* root) {
+    if (root != NULL) {
+        printf("%c", root->data);
+        prefixOrder(root->left);
+        prefixOrder(root->right);
+    }
+}
+
+void postfixOrder(Node* root) {
+    if (root != NULL) {
+        postfixOrder(root->left);
+        postfixOrder(root->right);
+        printf("%c", root->data);
+    }
+}
+
+void deleteTree(Node* root) {
+    if (root != NULL) {
+        deleteTree(root->left);
+        deleteTree(root->right);
+        deleteNode(root);
+    }
 }

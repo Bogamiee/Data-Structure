@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include "BinaryTree.h"
 
 typedef struct Stack {
     void** data;

@@ -15,5 +15,9 @@ Node* expressionTree(char* postfix);
 void infixToPostfix(char* infix, char* postfix);
 int precedence(char c);
 bool isOperator(char c);
+void infixOrder(Node* root);
+void prefixOrder(Node* root);
+void postfixOrder(Node* root);
+void deleteTree(Node* root);
 
 #endif
