@@ -35,22 +35,20 @@ int main() {
     cout << "polyList2: ";
     polyList2.display();
  
-    // 두 다항식의 덧셈
+    // 덧셈 연산 측정
     timer.measureExecutionTime([&]{
         sumList = polyList1.add(polyList2);
     });
     
-    // 결과 출력
     cout << "sumList (polyList1 + polyList2): ";
     sumList.display();
     timer.printExecutionTime();
 
-    // 두 다항식의 뺄셈
+    // 뺄셈 연산 측정
     timer.measureExecutionTime([&]{
         subList = polyList1.sub(polyList2);
     });
 
-    // 결과 출력
     cout << "subList (polyList1 - polyList2): ";
     subList.display();
     timer.printExecutionTime();
