@@ -1,7 +1,7 @@
 #include "linkedPolynomial.h"
 #include <iostream>
 using namespace std;
-#define endl "\n"
+
 Node::Node(int c, int e) : coefficient(c), exponent(e), next(nullptr) {}
 
 ListPolynomial::ListPolynomial() : head(nullptr) {}
@@ -44,7 +44,7 @@ ListPolynomial ListPolynomial::add(const ListPolynomial& other) const {
         } else if (ptrB && (!ptrA || ptrB->exponent > ptrA->exponent)) {
             result.setTerm(ptrB->coefficient, ptrB->exponent);
             ptrB = ptrB->next;
-        } else {
+        } else if (ptrA && ptrB) {  // 같은 지수일 때
             int sumCoeff = ptrA->coefficient + ptrB->coefficient;
             if (sumCoeff != 0) result.setTerm(sumCoeff, ptrA->exponent);
             ptrA = ptrA->next;
@@ -66,7 +66,7 @@ ListPolynomial ListPolynomial::sub(const ListPolynomial& other) const {
         } else if (ptrB && (!ptrA || ptrB->exponent > ptrA->exponent)) {
             result.setTerm(-ptrB->coefficient, ptrB->exponent);
             ptrB = ptrB->next;
-        } else {
+        } else if (ptrA && ptrB) {  // 같은 지수일 때
             int subCoeff = ptrA->coefficient - ptrB->coefficient;
             if (subCoeff != 0) result.setTerm(subCoeff, ptrA->exponent);
             ptrA = ptrA->next;
@@ -80,19 +80,16 @@ void ListPolynomial::display() const {
     Node* current = head;
     bool first = true;
     while (current) {
-        if (!first && current->coefficient >= 0) {
-            cout << " + ";
+        if (first) {
             cout << current->coefficient;
+        } else {
+            cout << (current->coefficient >= 0 ? " + " : " - ") << abs(current->coefficient);
         }
-        else {
-            cout << " - ";
-            cout << -current->coefficient;
-        }
-
-        first = false;
         if (current->exponent != 0) cout << "x^" << current->exponent;
+        first = false;
         current = current->next;
     }
     if (first) cout << "0";
     cout << endl;
 }
+
