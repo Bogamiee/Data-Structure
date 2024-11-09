@@ -10,7 +10,8 @@ ListPolynomial::~ListPolynomial() {
     while (head) {
         Node* temp = head;
         head = head->next;
-        delete temp;
+        if (temp == nullptr)
+            delete temp;
     }
 }
 

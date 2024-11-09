@@ -8,21 +8,21 @@ int main() {
 
     int n, coeff, exp;
 
+    srand(static_cast<unsigned int>(time(0)));
+
     // 첫 번째 다항식 입력
-    cout << "Enter the number of terms in the first polynomial: ";
+    cout << "Enter the number of terms: ";
     cin >> n;
-    cout << "Enter terms (coefficient exponent) for the first polynomial:\n";
     for (int i = 0; i < n; ++i) {
-        cin >> coeff >> exp;
+        coeff = (rand() % 10 + 1) * (rand() % 2 == 0 ? 1 : -1);
+        exp = n - i;
         poly1.addTerm(coeff, exp);
     }
 
     // 두 번째 다항식 입력
-    cout << "Enter the number of terms in the second polynomial: ";
-    cin >> n;
-    cout << "Enter terms (coefficient exponent) for the second polynomial:\n";
     for (int i = 0; i < n; ++i) {
-        cin >> coeff >> exp;
+        coeff = (rand() % 10 + 1) * (rand() % 2 == 0 ? 1 : -1);
+        exp = n - i;
         poly2.addTerm(coeff, exp);
     }
 
@@ -33,7 +33,7 @@ int main() {
     timer.measureExecutionTime([&]() {
         sum = poly1.add(poly2);
     });
-    sum.display();
+    // sum.display();
     timer.printExecutionTime();
 
     // 뺄셈 결과 출력
@@ -41,7 +41,7 @@ int main() {
     timer.measureExecutionTime([&]() {
         diff = poly1.subtract(poly2);
     });
-    diff.display();
+    // diff.display();
     timer.printExecutionTime();
 
     return 0;
