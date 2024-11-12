@@ -11,21 +11,22 @@ int main() {
     srand(static_cast<unsigned int>(time(0)));
 
     // 첫 번째 다항식 입력
-    cout << "Enter the number of terms: ";
+    cout << "Enter the number of terms in the first polynomial: ";
     cin >> n;
     ArrayPolynomial polyArray1(n);
+    cout << "Enter terms (coefficient exponent) for the first polynomial:\n";
     for (int i = 0; i < n; ++i) {
-        coeff = (rand() % 10 + 1) * (rand() % 2 == 0 ? 1 : -1);
-        exp = n - i;
+        cin >> coeff >> exp;
         polyArray1.setTerm(coeff, exp);
     }
 
     // 두 번째 다항식 입력
+    cout << "Enter the number of terms in the second polynomial: ";
+    cin >> n;
     ArrayPolynomial polyArray2(n);
     cout << "Enter terms (coefficient exponent) for the second polynomial:\n";
     for (int i = 0; i < n; ++i) {
-        coeff = (rand() % 10 + 1) * (rand() % 2 == 0 ? 1 : -1);
-        exp = n - i;
+        cin >> coeff >> exp;
         polyArray2.setTerm(coeff, exp);
     }
 
@@ -37,14 +38,12 @@ int main() {
     });
     
     // 결과 출력
-    /*
     cout << "polyArray1: ";
     polyArray1.display();
     cout << "polyArray2: ";
     polyArray2.display();
     cout << "sumArray (polyArray1 + polyArray2): ";
     sumArray.display();
-    */
     timer.printExecutionTime();
 
     return 0;

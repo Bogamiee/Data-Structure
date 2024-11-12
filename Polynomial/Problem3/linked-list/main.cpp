@@ -7,26 +7,24 @@ int main() {
     int n, coeff, exp;
     TimeMsr timer;
 
-    srand(static_cast<unsigned int>(time(0)));
-
     cout << "Linked List-based Polynomial:" << endl;
 
     ListPolynomial polyList1, polyList2;
     ListPolynomial sumList, subList;
 
     // 첫 번째 다항식 입력
-    cout << "Enter the number of terms: ";
+    cout << "Enter the number of terms for the first polynomial: ";
     cin >> n;
     for (int i = 0; i < n; ++i) {
-        coeff = (rand() % 10 + 1) * (rand() % 2 == 0 ? 1 : -1);
-        exp = n - i;
+        cin >> coeff >> exp;
         polyList1.setTerm(coeff, exp);
     }
 
     // 두 번째 다항식 입력
+    cout << "Enter the number of terms for the second polynomial: ";
+    cin >> n;
     for (int i = 0; i < n; ++i) {
-        coeff = (rand() % 10 + 1) * (rand() % 2 == 0 ? 1 : -1);
-        exp = n - i;
+        cin >> coeff >> exp;
         polyList2.setTerm(coeff, exp);
     }
     

@@ -8,24 +8,21 @@ int main() {
     int n, coeff, exp;
     TimeMsr timer;
 
-    srand(static_cast<unsigned int>(time(0)));
-
     // 첫 번째 다항식 입력
-    cout << "Enter the number of terms: ";
+    cout << "Enter the number of terms for the first polynomial: ";
     cin >> n;
     ArrayPolynomial polyArray1(n);
     for (int i = 0; i < n; ++i) {
-        coeff = (rand() % 10 + 1) * (rand() % 2 == 0 ? 1 : -1);
-        exp = n - i;
+        cin >> coeff >> exp;
         polyArray1.setTerm(coeff, exp);
     }
 
     // 두 번째 다항식 입력
+    cout << "Enter the number of terms for the second polynomial: ";
+    cin >> n;
     ArrayPolynomial polyArray2(n);
-    cout << "Enter terms (coefficient exponent) for the second polynomial:\n";
     for (int i = 0; i < n; ++i) {
-        coeff = (rand() % 10 + 1) * (rand() % 2 == 0 ? 1 : -1);
-        exp = n - i;
+        cin >> coeff >> exp;
         polyArray2.setTerm(coeff, exp);
     }
 

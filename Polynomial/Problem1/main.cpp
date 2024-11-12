@@ -8,21 +8,18 @@ int main() {
 
     int n, coeff, exp;
 
-    srand(static_cast<unsigned int>(time(0)));
-
     // 첫 번째 다항식 입력
-    cout << "Enter the number of terms: ";
+    cout << "Enter the number of terms in the polynomial 1: ";
     cin >> n;
     for (int i = 0; i < n; ++i) {
-        coeff = (rand() % 10 + 1) * (rand() % 2 == 0 ? 1 : -1);
-        exp = n - i;
+        cin >> coeff >> exp;
         poly1.addTerm(coeff, exp);
     }
 
     // 두 번째 다항식 입력
+    cout << "Enter the number of terms in the polynomial 2: ";
     for (int i = 0; i < n; ++i) {
-        coeff = (rand() % 10 + 1) * (rand() % 2 == 0 ? 1 : -1);
-        exp = n - i;
+        cin >> coeff >> exp;
         poly2.addTerm(coeff, exp);
     }
 
