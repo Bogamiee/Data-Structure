@@ -112,5 +112,6 @@ void printLevel(Node* root) {
                 enqueue(&q, node->right);
             }
         }
+        freeQueue(&q);
     }
 }
