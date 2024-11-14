@@ -51,6 +51,63 @@ Node* expressionTree(char* postfix) {
     return root;
 }
 
+Node* expressionTreeV2(char* infix) {
+    char c;
+    Node *parent, *left, *right;
+    Stack operator; // 연산자 저장
+    Stack operand;  // 피연산자 저장
+    initStack(&operator);
+    initStack(&operand);
+
+    for (int i = 0; infix[i] != '\0'; i++) {
+        c = infix[i];
+
+        if (!isOperator(c) && c != '(' && c != ')') { // 피연산자인 경우
+            pushNode(&operand, createNode(c));
+        }
+        else if (c == '(') { // 여는 괄호인 경우
+            pushNode(&operator, createNode(c));
+        }
+        else if (c == ')') { // 닫는 괄호인 경우
+            parent = (Node*)peek(&operator);
+            while (!isEmpty(&operator) && parent->data != '(') {
+                parent = (Node*)pop(&operator);
+                right = (Node*)pop(&operand);
+                left = (Node*)pop(&operand);
+                insertNode(parent, right, left);
+                pushNode(&operator, parent);
+            }
+            free(pop(&operator));
+        }
+        else { // 연산자인 경우
+            if (!isEmpty(&operator)) {
+                parent = (Node*)peek(&operator);
+                while (!isEmpty(&operator) && precedence(parent->data) >= precedence(c)) {
+                    parent = (Node*)pop(&operator);
+                    right = (Node*)pop(&operand);
+                    left = (Node*)pop(&operand);
+                    insertNode(parent, right, left);
+                    pushNode(&operator, parent);
+                }
+            }
+            pushNode(&operator, createNode(c));
+        }
+    }
+
+    while (!isEmpty(&operator)) {
+        parent = (Node*)pop(&operator);
+        right = (Node*)pop(&operand);
+        left = (Node*)pop(&operand);
+        insertNode(parent, right, left);
+        pushNode(&operator, parent);
+    }
+
+    Node* root = (Node*)pop(&operand);
+    deleteStack(&operator);
+    deleteStack(&operand);
+    return root;
+}
+
 void infixToPostfix(char* infix, char* postfix) {
     Stack s;
     int j = 0;
@@ -144,23 +201,21 @@ void postfixOrder(Node* root) {
 }
 
 void levelOrder(Node* root) {
-    if (root == NULL) {
-        return;
-    }
+    if (root != NULL) {
+        Queue q;
+        Node* node;
+        initQueue(&q);
+        enqueue(&q, root);
 
-    Queue q;
-    Node* node;
-    initQueue(&q);
-    enqueue(&q, root);
-
-    while (!isQueueEmpty(&q)) {
-        node = dequeue(&q);
-        printf("%c", node->data);
-        if (node->left != NULL) {
-            enqueue(&q, node->left);
-        }
-        if (node->right != NULL) {
-            enqueue(&q, node->right);
+        while (!isQueueEmpty(&q)) {
+            node = dequeue(&q);
+            printf("%c", node->data);
+            if (node->left != NULL) {
+                enqueue(&q, node->left);
+            }
+            if (node->right != NULL) {
+                enqueue(&q, node->right);
+            }
         }
     }
 }
