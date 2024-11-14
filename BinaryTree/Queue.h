@@ -4,7 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "BinaryTree.h"
+
+#include "Tree.h"
 
 typedef struct Queue {
     Node** data;
@@ -14,11 +15,11 @@ typedef struct Queue {
 } Queue;
 
 void initQueue(Queue *q);
-void enqueue(Queue *q, Node* item);
-Node* dequeue(Queue *q);
-Node* peekQueue(Queue *q);
 bool isQueueEmpty(Queue *q);
 bool isQueueFull(Queue *q);
-void deleteQueue(Queue *q);
+void enqueue(Queue *q, Node *n);
+Node* dequeue(Queue *q);
+Node* peekQueue(Queue *q);
+void freeQueue(Queue *q);
 
 #endif

@@ -1,23 +1,36 @@
-# 컴파일러 설정
+# Compiler and flags
 CC = gcc
-CFLAGS = -Wall -g
+CFLAGS = -Wall -Wextra -g
+OBJDIR = obj
 
-# 파일 설정
-SRCS = main.c BinaryTree.c Stack.c Queue.c
-OBJS = $(SRCS:.c=.o)
-DEPS = BinaryTree.h Stack.h Queue.h
+# Source and header files
+SRCS = Calc.c Queue.c Stack.c Tree.c main.c
+OBJS = $(patsubst %.c,$(OBJDIR)/%.o,$(SRCS))
+HEADERS = Calc.h Queue.h Stack.h Tree.h
+
+# Target executable
 TARGET = main
 
-# 최종 실행 파일
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+# Default target
+all: $(TARGET)
 
-# 개별 소스 파일 컴파일
-%.o: %.c $(DEPS)
+# Linking object files to create the executable
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS)
+
+# Rule for compiling .c files into .o files
+$(OBJDIR)/%.o: %.c $(HEADERS) | $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# 정리
-.PHONY: clean
+# Create the object directory if it doesn't exist
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
+
+# Clean build files
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -rf $(OBJDIR) $(TARGET)
 	clear
+
+# Phony targets
+.PHONY: all clean
+

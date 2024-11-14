@@ -10,7 +10,7 @@
 #include "Tree.h"
 
 Node* infixToBinaryTree(char* infix);
-int precedence(char op);
+bool compare(char op1, char op2);
 bool isOperator(char c);
 void printInfix(Node* root);
 void printPostfix(Node* root);

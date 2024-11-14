@@ -1,28 +1,24 @@
-// Stack.h
-
 #ifndef STACK_H
 #define STACK_H
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdbool.h>
-#include "BinaryTree.h"
+
+#include "Tree.h"
 
 typedef struct Stack {
-    void** data;
+    Node** data;
     int capacity;
     int top;
 } Stack;
 
 void initStack(Stack *s);
-void push(Stack *s, void* item);
-void pushChar(Stack *s, char c);
-void pushNode(Stack *s, Node *n);
-void* pop(Stack* s);
-void* peek(Stack* s);
-bool isEmpty(Stack *s);
-bool isFull(Stack *s);
-void deleteStack(Stack *s);
+bool isStackEmpty(Stack *s);
+bool isStackFull(Stack *s);
+void pushStack(Stack *s, Node *n);
+Node* popStack(Stack* s);
+Node* peekStack(Stack* s);
+void freeStack(Stack *s);
 
 #endif

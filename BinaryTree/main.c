@@ -1,41 +1,33 @@
-// main.c
-
 #include "Stack.h"
-#include "BinaryTree.h"
+#include "Queue.h"
+#include "Tree.h"
+#include "Calc.h"
 
 int main() {
-    char infix[100] = "(1+2)*(3+4)";
-    char postfix[100] = "";
-    Node *root;
-/*
-    printf("Enter an infix expression: ");
+    char infix[100] = "";
+
+    printf("Enter infix expression: ");
     scanf("%s", infix);
-*/  
-    infixToPostfix(infix, postfix);
 
-    printf("Infix: %s\n", infix);
-    printf("Postfix: %s\n", postfix);
+    printf("Original Infix: %s\n\n", infix);
 
-    //root = expressionTree(postfix);
-    root = expressionTreeV2(infix);
+    Node* root = infixToBinaryTree(infix);
 
-    printf("Infix order: ");
-    infixOrder(root);
+    printf("Infix: ");
+    printInfix(root);
+
+    printf("\nPrefix: ");
+    printPrefix(root);
+
+    printf("\nPostfix: ");
+    printPostfix(root);
+    
+    printf("\nLevel: ");
+    printLevel(root);
+
     printf("\n");
 
-    printf("Prefix order: ");
-    prefixOrder(root);
-    printf("\n");
-
-    printf("Postfix order: ");
-    postfixOrder(root);
-    printf("\n");
-
-    printf("Level order: ");
-    levelOrder(root);
-    printf("\n");
-
-    deleteTree(root);
-
+    freeTree(root);
+    
     return 0;
 }
