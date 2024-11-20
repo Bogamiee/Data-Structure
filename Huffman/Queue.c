@@ -55,9 +55,10 @@ int queueSize(Queue *q) {
 }
 
 void freeQueue(Queue *q) {
-    while (!isQueueEmpty(q)) {
-        free(dequeue(q));
+    for (int i = q->front; i != q->rear; i = (i + 1) % q->capacity) {
+        free(q->data[i]);
     }
     free(q->data);
+    q->data = NULL;
 }
 

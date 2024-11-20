@@ -44,6 +44,8 @@ Node* huffmanTree(const char *str) {
     }
     
     Node* root = dequeue(&q);
+    freeQueue(&q);
+    freeTree(root);
 
     return NULL;
 }

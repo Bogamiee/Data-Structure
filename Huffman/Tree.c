@@ -20,9 +20,11 @@ void linkNodes(Node* parent, Node* left, Node* right) { // Link the parent node 
 
 void freeTree(Node* root) { // Free the memory allocated for the tree
     if (root == NULL) {
+        printf("NULL\n");
         return;
     }
     freeTree(root->left);
     freeTree(root->right);
+    printf("Freeing node: %c\n", root->symbol);
     free(root);
 }

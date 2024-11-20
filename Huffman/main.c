@@ -3,10 +3,10 @@
 #include "Huffman.h"
 
 int main() {
-    //char str[] = "helloworldmynamesjeff";
-    char str[] = "thisisanexampleofahuffmancodetestwherewewanttocompressacharacterstringefficientlywithminimalspace";
+    char str[] = "helloworldmynamesjeff";
+    //char str[] = "thisisanexampleofahuffmancodetestwherewewanttocompressacharacterstringefficientlywithminimalspace";
 
-    //char str[] = "abcd";
+    //char str[] = "a";
     printf("Original string: %s\n", str);
 
     Node* root = huffmanTree(str);
