@@ -56,9 +56,6 @@ void huffmanTree(Node** huffman, char str[]) {
         }
     }
 
-    // sort nodes by frequency
-    quickSort(nodes, 0, count - 1);
-
     // create queue and enqueue nodes
     Queue nodeQueue;
     initQueue(&nodeQueue);

@@ -3,7 +3,6 @@
 
 #include "Node.h"
 #include "Queue.h"
-#include "QuickSort.h"
 
 bool huffmanCoding(char str[]);
 void huffmanTree(Node** node, char str[]);

@@ -1,7 +1,4 @@
-#include "Node.h"
 #include "Huffman.h"
-#include "Queue.h"
-#include "QuickSort.h"
 
 int main() {
     char str[] = "ABBCCCDDDDEEEEEFFFFFF";

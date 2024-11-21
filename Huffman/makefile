@@ -4,8 +4,8 @@ CFLAGS = -Wall -Wextra -std=c11
 
 # 디렉토리 설정
 BUILD_DIR = build
-SRC_FILES = QuickSort.c Queue.c Node.c Huffman.c main.c
-HEADER_FILES = QuickSort.h Queue.h Node.h Huffman.h
+SRC_FILES = Queue.c Node.c Huffman.c main.c
+HEADER_FILES = Queue.h Node.h Huffman.h
 OBJ_FILES = $(patsubst %.c,$(BUILD_DIR)/%.o,$(SRC_FILES))
 TARGET = main
 
