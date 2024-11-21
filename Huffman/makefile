@@ -1,51 +1,30 @@
-# Compiler and flags
+# 컴파일러 설정
 CC = gcc
-CFLAGS = -Wall -O2
+CFLAGS = -Wall -Wextra -std=c11
 
-# Directories
+# 디렉토리 설정
 BUILD_DIR = build
-SRC_DIR = .
+SRC_FILES = QuickSort.c Queue.c Node.c Huffman.c main.c
+HEADER_FILES = QuickSort.h Queue.h Node.h Huffman.h
+OBJ_FILES = $(patsubst %.c,$(BUILD_DIR)/%.o,$(SRC_FILES))
 TARGET = main
 
-# Source and object files
-SRCS = $(SRC_DIR)/main.c $(SRC_DIR)/Huffman.c $(SRC_DIR)/Queue.c $(SRC_DIR)/Tree.c
-OBJS = $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
+# 기본 규칙
+all: $(TARGET)
 
-# OS detection
-ifeq ($(OS),Windows_NT)
-    RM = del /F /Q
-    EXE = $(TARGET).exe
-else
-    RM = rm -f
-    EXE = $(TARGET)
-endif
+# 실행 파일 규칙
+$(TARGET): $(OBJ_FILES)
+	$(CC) $(CFLAGS) -o $@ $(OBJ_FILES)
 
-# Default target
-all: $(BUILD_DIR) $(EXE)
-
-# Create the build directory if it doesn't exist
-$(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
-
-# Link object files to create the executable
-$(EXE): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
-
-# Compile source files into object files
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+# 객체 파일 규칙
+$(BUILD_DIR)/%.o: %.c $(HEADER_FILES)
+	@mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean target
+# 클린 규칙
 clean:
-	$(RM) $(BUILD_DIR)/* $(EXE)
+	rm -rf $(BUILD_DIR) $(TARGET)
 	clear
 
-# Rebuild target
-rebuild: clean all
-
-# Include header dependencies
-$(BUILD_DIR)/Huffman.o: $(SRC_DIR)/Huffman.c $(SRC_DIR)/Huffman.h
-$(BUILD_DIR)/Queue.o: $(SRC_DIR)/Queue.c $(SRC_DIR)/Queue.h
-$(BUILD_DIR)/Tree.o: $(SRC_DIR)/Tree.c $(SRC_DIR)/Tree.h
-$(BUILD_DIR)/main.o: $(SRC_DIR)/main.c $(SRC_DIR)/Huffman.h $(SRC_DIR)/Queue.h $(SRC_DIR)/Tree.h
-
+# 의존성 관리
+.PHONY: all clean

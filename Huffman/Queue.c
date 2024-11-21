@@ -1,64 +1,87 @@
 #include "Queue.h"
 
 void initQueue(Queue *q) {
-    q->front = 0;
-    q->rear = 0;
-    q->capacity = 16;
-    q->data = (Node**)malloc(q->capacity * sizeof(Node*));
-    if (q->data == NULL) {
-        fprintf(stderr, "Memory allocation failed in initQueue()\n");
-        exit(1);
-    }
+    q->front = NULL;
+    q->rear = NULL;
 }
 
 bool isQueueEmpty(Queue *q) {
-    return q->front == q->rear;
-}
-
-bool isQueueFull(Queue *q) {
-    return (q->rear + 1) % q->capacity == q->front;
+    return q->front == NULL;
 }
 
 void enqueue(Queue *q, Node *n) {
-    if (isQueueFull(q)) {
-        q->capacity *= 2;
-        q->data = (Node**)realloc(q->data, q->capacity * sizeof(Node*));
-        if (q->data == NULL) {
-            fprintf(stderr, "Memory allocation failed in enqueue()\n");
-            exit(1);
+    QueueNode* queueNode = (QueueNode*) malloc(sizeof(QueueNode));
+    if (queueNode == NULL) {
+        fprintf(stderr, "Memory allocation failed in enqueue()\n");
+        exit(1);
+    }
+
+    queueNode->node = n;
+    queueNode->next = NULL;
+
+    if (isQueueEmpty(q)) {
+        q->front = queueNode;
+        q->rear = queueNode;
+        return;
+    }
+
+    QueueNode *prev = NULL;
+    QueueNode *curr = q->front;
+
+    // locate the node at right position, based on frequency
+    while (curr != NULL && curr->node->freq < n->freq) {
+        prev = curr;
+        curr = curr->next;
+    }
+
+    if (prev == NULL) {
+        queueNode->next = q->front;
+        q->front = queueNode;
+    }
+    else {
+        prev->next = queueNode;
+        queueNode->next = curr;
+        if (curr == NULL) {
+            q->rear = queueNode;
         }
     }
-    q->data[q->rear] = n;
-    q->rear = (q->rear + 1) % q->capacity;
 }
 
 Node* dequeue(Queue *q) {
     if (isQueueEmpty(q)) {
-        fprintf(stderr, "Queue is empty in dequeue()\n");
-        exit(1);
+        return NULL;
     }
-    Node* n = q->data[q->front];
-    q->front = (q->front + 1) % q->capacity;
+
+    QueueNode* temp = q->front;
+    Node* n = temp->node;
+    q->front = q->front->next;
+    free(temp);
+
     return n;
 }
 
 Node* peekQueue(Queue *q) {
     if (isQueueEmpty(q)) {
-        fprintf(stderr, "Queue is empty in peekQueue()\n");
-        exit(1);
+        return NULL;
     }
-    return q->data[q->front];
+
+    return q->front->node;
 }
 
 int queueSize(Queue *q) {
-    return (q->rear - q->front + q->capacity) % q->capacity;
-}
-
-void freeQueue(Queue *q) {
-    for (int i = q->front; i != q->rear; i = (i + 1) % q->capacity) {
-        free(q->data[i]);
+    int size = 0;
+    QueueNode* curr = q->front;
+    while (curr != NULL) {
+        size++;
+        curr = curr->next;
     }
-    free(q->data);
-    q->data = NULL;
+
+    return size;
 }
 
+void deleteQueue(Queue *q) {
+    while (!isQueueEmpty(q)) {
+        Node* n = dequeue(q);
+        deleteNode(n);
+    }
+}

@@ -1,15 +1,12 @@
-#include "Queue.h"
-#include "Tree.h"
+#include "Node.h"
 #include "Huffman.h"
+#include "Queue.h"
+#include "QuickSort.h"
 
 int main() {
-    char str[] = "helloworldmynamesjeff";
-    //char str[] = "thisisanexampleofahuffmancodetestwherewewanttocompressacharacterstringefficientlywithminimalspace";
-
-    //char str[] = "a";
-    printf("Original string: %s\n", str);
-
-    Node* root = huffmanTree(str);
+    char str[] = "ABBCCCDDDDEEEEEFFFFFF";
+    //char str[] = "AAAAAAABBCCCDEEEEFFFFFFG";
+    huffmanCoding(str);
 
     return 0;
 }

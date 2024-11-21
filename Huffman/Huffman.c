@@ -1,86 +1,92 @@
 #include "Huffman.h"
 
-Node* huffmanTree(const char *str) {
-    Queue q;
+bool huffmanCoding(char str[]) {
+    Node* huffman = NULL;
+    huffmanTree(&huffman, str);
+
+    if (huffman == NULL) {
+        printf("huffman is NULL\n");
+        return false;
+    }
+/*
+    char* encoded = huffmanEncode(str, huffman);
+
+    if (encoded == NULL) {
+        return false;
+    }
+    printf("encoded: %s\n", encoded);
+
+    char* decoded = huffmanDecode(encoded, huffman);
+
+    if (decoded == NULL) {
+        return false;
+    }
+    printf("decoded: %s\n", decoded);
+*/
+    deleteNode(huffman);
+
+    return true;
+}
+
+void huffmanTree(Node** huffman, char str[]) {
+    // count frequency of each character
     int freq[256] = {0};
-    int size = 0;
-
-    for (int i = 0; str[i] != '\0'; i++) {
+    for (int i = 0; str[i] != '\0'; i++)
         freq[(int)str[i]]++;
-    }
 
+    // count number of unique characters
+    int count = 0;
     for (int i = 0; i < 256; i++) {
-        if (freq[i]) {
-            size++;
-        }
+        if (freq[i] > 0) count++;
     }
 
-    printf("Size: %d\n", size);
-    Node nodeArray[size];
+    // create a node array
+    Node* nodes = (Node*) malloc(count * sizeof(Node));
+    if (nodes == NULL) return;
 
-    for (int i = 0, j = 0; i < 256; i++) {
-        if (freq[i]) {
-            nodeArray[j].symbol = (char)i;
-            nodeArray[j].frequency = freq[i];
-            nodeArray[j].left = NULL;
-            nodeArray[j].right = NULL;
+    // create a node for each character
+    int j = 0;
+    for (int i = 0; i < 256; i++) {
+        if (freq[i] > 0) {
+            nodes[j].ch = i;
+            nodes[j].freq = freq[i];
+            nodes[j].left = NULL;
+            nodes[j].right = NULL;
             j++;
         }
     }
 
-    qsortArray(nodeArray, 0, size - 1);
-    initQueue(&q);
-    
-    for (int i = 0; i < size; i++) {
-        enqueue(&q, &nodeArray[i]);
-    }
+    // sort nodes by frequency
+    quickSort(nodes, 0, count - 1);
 
-    while (queueSize(&q) > 1) {
-        Node* left = dequeue(&q);
-        Node* right = dequeue(&q);
-        Node* parent = createNode('\0', left->frequency + right->frequency);
+    // create queue and enqueue nodes
+    Queue nodeQueue;
+    initQueue(&nodeQueue);
+    for (int i = 0; i < count; i++)
+        enqueue(&nodeQueue, createNode(nodes[i].freq, nodes[i].ch));
+    
+    // free nodes array
+    free(nodes);
+
+    // build huffman tree
+    while (queueSize(&nodeQueue) > 1) {
+        Node* left = dequeue(&nodeQueue);
+        Node* right = dequeue(&nodeQueue);
+        Node* parent = createNode(left->freq + right->freq, '\0');
         linkNodes(parent, left, right);
-        enqueue(&q, parent);
+        enqueue(&nodeQueue, parent);
     }
-    
-    Node* root = dequeue(&q);
-    freeQueue(&q);
-    freeTree(root);
 
+    *huffman = dequeue(&nodeQueue);
+
+    // delete nodes queue
+    deleteQueue(&nodeQueue);
+}
+
+char* huffmanEncode(char str[], Node *huffman) {
     return NULL;
 }
 
-void qsortArray(Node nodeArray[], int p, int r) {
-    int q;
-
-    if (p < r) {
-        q = partition(nodeArray, p, r);
-        qsortArray(nodeArray, p, q - 1);
-        qsortArray(nodeArray, q + 1, r);
-    }
-}
-
-int partition(Node nodeArray[], int p, int r) {
-    int x = nodeArray[r].frequency;
-    int i = p - 1;
-
-    for (int j = p; j < r; j++) {
-        if (nodeArray[j].frequency <= x) {
-            i++;
-            swap(&nodeArray[i], &nodeArray[j]);
-        }
-    }
-
-    swap(&nodeArray[i + 1], &nodeArray[r]);
-
-    return i + 1;
-}
-
-void swap(Node* a, Node* b) {
-    Node temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
-void encoding(Node* root, char* code, const char *str) {
+char* huffmanDecode(char encoded[], Node *huffman) {
+    return NULL;
 }

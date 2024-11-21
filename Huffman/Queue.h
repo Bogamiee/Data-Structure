@@ -4,23 +4,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "Node.h"
 
-#include "Tree.h"
+typedef struct queueNode {
+    Node* node;
+    struct queueNode* next;
+} QueueNode;
 
-typedef struct Queue {
-    Node** data;
-    int capacity;
-    int front;
-    int rear;
+typedef struct queue {
+    QueueNode* front;
+    QueueNode* rear;
 } Queue;
 
 void initQueue(Queue *q);
 bool isQueueEmpty(Queue *q);
-bool isQueueFull(Queue *q);
 void enqueue(Queue *q, Node *n);
 Node* dequeue(Queue *q);
 Node* peekQueue(Queue *q);
 int queueSize(Queue *q);
-void freeQueue(Queue *q);
+void deleteQueue(Queue *q);
 
 #endif

@@ -1,18 +1,18 @@
-#ifndef TREE_H
-#define TREE_H
+#ifndef NODE_H
+#define NODE_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
 typedef struct Node {
-    char symbol;
-    int frequency;
+    int freq;
+    char ch;
     struct Node *left, *right;
 } Node;
 
-Node* createNode(char data, int freq);
+Node* createNode(int freq, char ch);
 void linkNodes(Node* parent, Node* left, Node* right);
-void freeTree(Node* root);
+void deleteNode(Node* node);
 
 #endif
