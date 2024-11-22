@@ -6,7 +6,8 @@
 
 bool huffmanCoding(char str[]);
 void huffmanTree(Node** node, char str[]);
-char* huffmanEncode(char str[], Node *huffman);
+void huffmanEncode(char str[], char encoded[], Node *huffman);
+void createCode(Node* node, char* codeMap[], char code[], int index);
 char* huffmanDecode(char encoded[], Node *huffman);
 
 #endif

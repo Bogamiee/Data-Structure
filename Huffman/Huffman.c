@@ -2,15 +2,17 @@
 
 bool huffmanCoding(char str[]) {
     Node* huffman = NULL;
+    char* encoded = NULL;
     huffmanTree(&huffman, str);
 
     if (huffman == NULL) {
         printf("huffman is NULL\n");
         return false;
     }
-/*
-    char* encoded = huffmanEncode(str, huffman);
 
+    huffmanEncode(str, encoded, huffman);
+
+/*
     if (encoded == NULL) {
         return false;
     }
@@ -74,14 +76,33 @@ void huffmanTree(Node** huffman, char str[]) {
         enqueue(&nodeQueue, parent);
     }
 
+    // assign huffman tree to huffman
     *huffman = dequeue(&nodeQueue);
 
     // delete nodes queue
     deleteQueue(&nodeQueue);
 }
 
-char* huffmanEncode(char str[], Node *huffman) {
+void huffmanEncode(char str[], char encoded[], Node *huffman) {
+    char *codeMap[256] = {NULL};
+    char code[256] = {'\0'};
+    createCode(huffman, codeMap, code, 0);
+
+    for (int i = 0; i < 256; i++) {
+        if (codeMap[i] != NULL) {
+            printf("%c: %s\n", i, codeMap[i]);
+        }
+    }
+
+    // create code for each character
+
     return NULL;
+}
+
+void createCode(Node* node, char* codeMap[256], char code[], int index) {
+    if (node == NULL) return;
+
+
 }
 
 char* huffmanDecode(char encoded[], Node *huffman) {
