@@ -19,7 +19,7 @@ void printLevel(Node* root);
 int evaluateInfix(Node* root);
 int evaluatePrefix(Node* root);
 int evaluatePostfix(Node* root);
-int evaluateLevel(Node* root);
+
 
 
 #endif
