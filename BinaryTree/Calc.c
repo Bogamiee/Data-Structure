@@ -1,9 +1,9 @@
-#include "Calc.h"
+#include "Cal.h"
 
 Node* infixToBinaryTree(char* infix) {
     char c;
     Stack nodeStack;    // Stack to store the nodes
-    Stack opStack;      // Stack to store the operators(연산자)
+    Stack opStack;      // Stack to store the operators( 뿰 궛 옄)
     initStack(&nodeStack);
     initStack(&opStack);
     
@@ -33,7 +33,7 @@ Node* infixToBinaryTree(char* infix) {
             }
             pushStack(&opStack, createNode(c)); // Push the current operator to the operator stack
         }
-        else { // If the character is an operand(피연산자), push it to the node stack
+        else { // If the character is an operand( 뵾 뿰 궛 옄), push it to the node stack
             pushStack(&nodeStack, createNode(c));
         }
     }
@@ -112,6 +112,104 @@ void printLevel(Node* root) {
                 enqueue(&q, node->right);
             }
         }
-        freeQueue(&q);
     }
 }
+
+int evaluateInfix(Node* root) {
+    if (root == NULL) return 0;
+
+    if (!isOperator(root->data)) {
+        return root->data - '0'; // 피연산자를 정수로 변환
+    }
+
+    int leftValue = evaluateInfix(root->left);
+    int rightValue = evaluateInfix(root->right);
+
+    switch (root->data) {
+        case '+': return leftValue + rightValue;
+        case '-': return leftValue - rightValue;
+        case '*': return leftValue * rightValue;
+        case '/': return leftValue / rightValue;
+        default: return 0;
+    }
+}
+
+int evaluatePrefix(Node* root) {
+    if (root == NULL) return 0;
+
+    if (!isOperator(root->data)) {
+        return root->data - '0';
+    }
+
+    int leftValue = evaluatePrefix(root->left);
+    int rightValue = evaluatePrefix(root->right);
+
+    switch (root->data) {
+        case '+': return leftValue + rightValue;
+        case '-': return leftValue - rightValue;
+        case '*': return leftValue * rightValue;
+        case '/': return leftValue / rightValue;
+        default: return 0;
+    }
+}
+
+int evaluatePostfix(Node* root) {
+    if (root == NULL) return 0;
+
+    if (!isOperator(root->data)) {
+        return root->data - '0';
+    }
+
+    int leftValue = evaluatePostfix(root->left);
+    int rightValue = evaluatePostfix(root->right);
+
+    switch (root->data) {
+        case '+': return leftValue + rightValue;
+        case '-': return leftValue - rightValue;
+        case '*': return leftValue * rightValue;
+        case '/': return leftValue / rightValue;
+        default: return 0;
+    }
+}
+
+int evaluateLevel(Node* root) {
+    if (root == NULL) return 0;
+
+    Queue q;
+    initQueue(&q);
+    enqueue(&q, root);
+
+    while (!isQueueEmpty(&q)) {
+        Node* node = dequeue(&q);
+
+        // 숫자 노드는 정수로 변환
+        if (!isOperator(node->data)) {
+            node->data = node->data - '0';  // 문자형 숫자를 정수로 변환
+        } else {
+            // 연산자 노드가 두 자식(피연산자)을 모두 가질 때만 처리
+            if (node->left && node->right &&
+                !isOperator(node->left->data) && !isOperator(node->right->data)) {
+
+                int leftValue = node->left->data;
+                int rightValue = node->right->data;
+
+                // 연산자에 따라 계산
+                switch (node->data) {
+                    case '+': node->data = leftValue + rightValue; break;
+                    case '-': node->data = leftValue - rightValue; break;
+                    case '*': node->data = leftValue * rightValue; break;
+                    case '/': node->data = leftValue / rightValue; break;
+                    default: break;
+                }
+            }
+        }
+
+        // 자식 노드를 큐에 삽입
+        if (node->left) enqueue(&q, node->left);
+        if (node->right) enqueue(&q, node->right);
+    }
+
+    // 최종 결과는 루트 노드에 저장되므로 루트 값을 반환
+    return root->data;
+}
+
