@@ -1,33 +1,33 @@
 #include "Stack.h"
 #include "Queue.h"
 #include "Tree.h"
-#include "Calc.h"
+#include "Cal.h"
 
 int main() {
     char infix[100] = "";
 
-    printf("Enter infix expression: ");
+    printf("중위 표기식을 입력하세요: ");
     scanf("%s", infix);
-
-    printf("Original Infix: %s\n\n", infix);
 
     Node* root = infixToBinaryTree(infix);
 
-    printf("Infix: ");
+    printf("중위 표기: ");
     printInfix(root);
+    printf(" = %d\n", evaluateInfix(root));
 
-    printf("\nPrefix: ");
+    printf("전위 표기: ");
     printPrefix(root);
+    printf(" = %d\n", evaluatePrefix(root));
 
-    printf("\nPostfix: ");
+    printf("후위 표기: ");
     printPostfix(root);
-    
-    printf("\nLevel: ");
-    printLevel(root);
+    printf(" = %d\n", evaluatePostfix(root));
 
-    printf("\n");
+    printf("레벨 순회: ");
+    printLevel(root);
+    printf(" = %d\n", evaluateLevel(root));
 
     freeTree(root);
-    
+
     return 0;
 }
