@@ -2,7 +2,8 @@
 
 bool huffmanCoding(char str[]) {
     Node* huffman = NULL;
-    char* encoded = NULL;
+    char encoded[1024] = {'\0'}; // Output buffer for the encoded string.
+
     huffmanTree(&huffman, str);
 
     if (huffman == NULL) {
@@ -10,43 +11,42 @@ bool huffmanCoding(char str[]) {
         return false;
     }
 
+    // Encoding
     huffmanEncode(str, encoded, huffman);
-
-/*
-    if (encoded == NULL) {
+    if (encoded[0] == '\0') {
+        deleteNode(huffman);
         return false;
     }
     printf("encoded: %s\n", encoded);
 
+    // Decoding
     char* decoded = huffmanDecode(encoded, huffman);
-
     if (decoded == NULL) {
+        deleteNode(huffman);
         return false;
     }
     printf("decoded: %s\n", decoded);
-*/
+
+    // Free resources
+    free(decoded);
     deleteNode(huffman);
 
     return true;
 }
 
 void huffmanTree(Node** huffman, char str[]) {
-    // count frequency of each character
     int freq[256] = {0};
     for (int i = 0; str[i] != '\0'; i++)
         freq[(int)str[i]]++;
 
-    // count number of unique characters
     int count = 0;
     for (int i = 0; i < 256; i++) {
         if (freq[i] > 0) count++;
     }
 
-    // create a node array
     Node* nodes = (Node*) malloc(count * sizeof(Node));
     if (nodes == NULL) return;
 
-    // create a node for each character
     int j = 0;
     for (int i = 0; i < 256; i++) {
         if (freq[i] > 0) {
@@ -58,16 +58,13 @@ void huffmanTree(Node** huffman, char str[]) {
         }
     }
 
-    // create queue and enqueue nodes
     Queue nodeQueue;
     initQueue(&nodeQueue);
     for (int i = 0; i < count; i++)
         enqueue(&nodeQueue, createNode(nodes[i].freq, nodes[i].ch));
     
-    // free nodes array
     free(nodes);
 
-    // build huffman tree
     while (queueSize(&nodeQueue) > 1) {
         Node* left = dequeue(&nodeQueue);
         Node* right = dequeue(&nodeQueue);
@@ -76,35 +73,67 @@ void huffmanTree(Node** huffman, char str[]) {
         enqueue(&nodeQueue, parent);
     }
 
-    // assign huffman tree to huffman
     *huffman = dequeue(&nodeQueue);
 
-    // delete nodes queue
     deleteQueue(&nodeQueue);
 }
 
-void huffmanEncode(char str[], char encoded[], Node *huffman) {
-    char *codeMap[256] = {NULL};
+void huffmanEncode(char str[], char encoded[], Node* huffman) {
+    char* codeMap[256] = {NULL};
     char code[256] = {'\0'};
     createCode(huffman, codeMap, code, 0);
 
-    for (int i = 0; i < 256; i++) {
-        if (codeMap[i] != NULL) {
-            printf("%c: %s\n", i, codeMap[i]);
+    encoded[0] = '\0'; // Ensure encoded starts empty.
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (codeMap[(int)str[i]] != NULL) {
+            strcat(encoded, codeMap[(int)str[i]]);
         }
     }
 
-    // create code for each character
-
-    return NULL;
+    // Free the codeMap memory
+    for (int i = 0; i < 256; i++) {
+        if (codeMap[i] != NULL) {
+            free(codeMap[i]);
+        }
+    }
 }
 
-void createCode(Node* node, char* codeMap[256], char code[], int index) {
+void createCode(Node* node, char* codeMap[], char code[], int index) {
     if (node == NULL) return;
 
+    if (node->left == NULL && node->right == NULL) {
+        code[index] = '\0';
+        codeMap[(int)node->ch] = strdup(code);
+        return;
+    }
 
+    code[index] = '0';
+    createCode(node->left, codeMap, code, index + 1);
+
+    code[index] = '1';
+    createCode(node->right, codeMap, code, index + 1);
 }
 
-char* huffmanDecode(char encoded[], Node *huffman) {
-    return NULL;
+char* huffmanDecode(char encoded[], Node* huffman) {
+    if (huffman == NULL) return NULL;
+
+    char* decoded = (char*) malloc(1024 * sizeof(char)); // Adjust size as needed.
+    int decodedIndex = 0;
+
+    Node* current = huffman;
+    for (int i = 0; encoded[i] != '\0'; i++) {
+        if (encoded[i] == '0') {
+            current = current->left;
+        } else {
+            current = current->right;
+        }
+
+        if (current->left == NULL && current->right == NULL) {
+            decoded[decodedIndex++] = current->ch;
+            current = huffman;
+        }
+    }
+
+    decoded[decodedIndex] = '\0';
+    return decoded;
 }
