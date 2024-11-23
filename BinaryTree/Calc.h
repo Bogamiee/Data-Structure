@@ -1,5 +1,5 @@
-#ifndef CALC_H
-#define CALC_H
+#ifndef CAL_H
+#define CAL_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,5 +16,10 @@ void printInfix(Node* root);
 void printPostfix(Node* root);
 void printPrefix(Node* root);
 void printLevel(Node* root);
+int evaluateInfix(Node* root);
+int evaluatePrefix(Node* root);
+int evaluatePostfix(Node* root);
+int evaluateLevel(Node* root);
+
 
 #endif
