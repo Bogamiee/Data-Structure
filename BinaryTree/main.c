@@ -25,7 +25,7 @@ int main() {
 
     printf("레벨 순회: ");
     printLevel(root);
-    printf(" = %d\n", evaluateLevel(root));
+    
 
     freeTree(root);
 
