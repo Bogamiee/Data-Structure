@@ -11,7 +11,7 @@ bool huffmanCoding(char str[]);
 void huffmanTree(Node** huffman, char str[]);
 
 // Encodes the input string using the provided Huffman tree.
-void huffmanEncode(char str[], char encoded[], Node* huffman);
+void huffmanEncode(char str[], char* encoded[], Node* huffman);
 
 // Recursively creates Huffman codes for all characters and stores them in the codeMap.
 void createCode(Node* node, char* codeMap[], char code[], int index);

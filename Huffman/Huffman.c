@@ -2,7 +2,7 @@
 
 bool huffmanCoding(char str[]) {
     Node* huffman = NULL;
-    char encoded[1024] = {'\0'}; // Output buffer for the encoded string.
+    char* encoded = NULL; // Output buffer for the encoded string.
 
     huffmanTree(&huffman, str);
 
@@ -12,7 +12,7 @@ bool huffmanCoding(char str[]) {
     }
 
     // Encoding
-    huffmanEncode(str, encoded, huffman);
+    huffmanEncode(str, &encoded, huffman);
     if (encoded[0] == '\0') {
         deleteNode(huffman);
         return false;
@@ -28,6 +28,7 @@ bool huffmanCoding(char str[]) {
     printf("decoded: %s\n", decoded);
 
     // Free resources
+    free(encoded);
     free(decoded);
     deleteNode(huffman);
 
@@ -78,15 +79,29 @@ void huffmanTree(Node** huffman, char str[]) {
     deleteQueue(&nodeQueue);
 }
 
-void huffmanEncode(char str[], char encoded[], Node* huffman) {
-    char* codeMap[256] = {NULL};
+void huffmanEncode(char str[], char** encoded, Node* huffman) {
+    char* codeMap[1024] = {NULL};
     char code[256] = {'\0'};
     createCode(huffman, codeMap, code, 0);
 
-    encoded[0] = '\0'; // Ensure encoded starts empty.
+    size_t capacity = 32;  // Initial capacity
+    size_t length = 0;     // Current length of encoded string
+    *encoded = (char*)malloc(capacity * sizeof(char));
+    if (*encoded == NULL) return;
+
+    (*encoded)[0] = '\0'; // Ensure encoded starts empty.
+
     for (int i = 0; str[i] != '\0'; i++) {
         if (codeMap[(int)str[i]] != NULL) {
-            strcat(encoded, codeMap[(int)str[i]]);
+            size_t codeLength = strlen(codeMap[(int)str[i]]);
+            if (length + codeLength + 1 > capacity) {
+                // Double the capacity
+                capacity *= 2;
+                *encoded = (char*)realloc(*encoded, capacity * sizeof(char));
+                if (*encoded == NULL) return;
+            }
+            strcat(*encoded, codeMap[(int)str[i]]);
+            length += codeLength;
         }
     }
 
