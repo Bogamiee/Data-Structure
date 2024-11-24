@@ -103,7 +103,8 @@ void createCode(Node* node, char* codeMap[], char code[], int index) {
 
     if (node->left == NULL && node->right == NULL) {
         code[index] = '\0';
-        codeMap[(int)node->ch] = strdup(code);
+        codeMap[(int)node->ch] = (char*) malloc((strlen(code) + 1) * sizeof(char));
+        strcpy(codeMap[(int)node->ch], code);
         return;
     }
 
