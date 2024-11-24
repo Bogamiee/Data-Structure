@@ -17,7 +17,8 @@ bool huffmanCoding(char str[]) {
         deleteNode(huffman);
         return false;
     }
-    printf("encoded: %s\n", encoded);
+    printf("encoded result: %s\n", encoded);
+    printf("\n");
 
     // Decoding
     char* decoded = huffmanDecode(encoded, huffman);
@@ -79,31 +80,29 @@ void huffmanTree(Node** huffman, char str[]) {
     deleteQueue(&nodeQueue);
 }
 
-void huffmanEncode(char str[], char** encoded, Node* huffman) {
-    char* codeMap[1024] = {NULL};
+void huffmanEncode(char str[], char encoded[], Node* huffman) {
+    char* codeMap[256] = {NULL};
     char code[256] = {'\0'};
     createCode(huffman, codeMap, code, 0);
 
-    size_t capacity = 32;  // Initial capacity
-    size_t length = 0;     // Current length of encoded string
-    *encoded = (char*)malloc(capacity * sizeof(char));
-    if (*encoded == NULL) return;
+    encoded[0] = '\0'; // Ensure encoded starts empty.
 
-    (*encoded)[0] = '\0'; // Ensure encoded starts empty.
+    // Set to keep track of already processed characters
+    int printed[256] = {0}; // Array to track if a character has been processed
 
     for (int i = 0; str[i] != '\0'; i++) {
         if (codeMap[(int)str[i]] != NULL) {
-            size_t codeLength = strlen(codeMap[(int)str[i]]);
-            if (length + codeLength + 1 > capacity) {
-                // Double the capacity
-                capacity *= 2;
-                *encoded = (char*)realloc(*encoded, capacity * sizeof(char));
-                if (*encoded == NULL) return;
+            strcat(encoded, codeMap[(int)str[i]]);
+
+            // Print the encoding of each character only once
+            if (!printed[(int)str[i]]) {
+                printf("Character '%c' encoded as: %s\n", str[i], codeMap[(int)str[i]]);
+                printed[(int)str[i]] = 1; // Mark this character as processed
             }
-            strcat(*encoded, codeMap[(int)str[i]]);
-            length += codeLength;
         }
     }
+
+    printf("\n");
 
     // Free the codeMap memory
     for (int i = 0; i < 256; i++) {
@@ -112,6 +111,7 @@ void huffmanEncode(char str[], char** encoded, Node* huffman) {
         }
     }
 }
+
 
 void createCode(Node* node, char* codeMap[], char code[], int index) {
     if (node == NULL) return;
