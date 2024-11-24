@@ -81,22 +81,30 @@ void huffmanTree(Node** huffman, char str[]) {
 
 // Malloc
 void huffmanEncode(char str[], char** encoded, Node* huffman) {
-    char* codeMap[1024] = {NULL};
+    char* codeMap[256] = {NULL}; // 최대 256개의 문자
     char code[256] = {'\0'};
     createCode(huffman, codeMap, code, 0);
 
-    size_t capacity = 32;  // Initial capacity
-    size_t length = 0;     // Current length of encoded string
+    // 모든 문자의 인코딩 정보 출력
+    printf("Character Encodings:\n");
+    for (int i = 0; i < 256; i++) {
+        if (codeMap[i] != NULL) {
+            printf("'%c': %s\n", (char)i, codeMap[i]);
+        }
+    }
+
+    size_t capacity = 32;  // 초기 용량
+    size_t length = 0;     // 인코딩된 문자열의 현재 길이
     *encoded = (char*)malloc(capacity * sizeof(char));
     if (*encoded == NULL) return;
 
-    (*encoded)[0] = '\0'; // Ensure encoded starts empty.
+    (*encoded)[0] = '\0'; // 인코딩 결과를 빈 문자열로 초기화
 
     for (int i = 0; str[i] != '\0'; i++) {
         if (codeMap[(int)str[i]] != NULL) {
             size_t codeLength = strlen(codeMap[(int)str[i]]);
             if (length + codeLength + 1 > capacity) {
-                // Double the capacity
+                // 용량 초과 시 두 배로 증가
                 capacity *= 2;
                 *encoded = (char*)realloc(*encoded, capacity * sizeof(char));
                 if (*encoded == NULL) return;
@@ -106,13 +114,14 @@ void huffmanEncode(char str[], char** encoded, Node* huffman) {
         }
     }
 
-    // Free the codeMap memory
+    // 메모리 해제
     for (int i = 0; i < 256; i++) {
         if (codeMap[i] != NULL) {
             free(codeMap[i]);
         }
     }
 }
+
 
 void createCode(Node* node, char* codeMap[], char code[], int index) {
     if (node == NULL) return;
