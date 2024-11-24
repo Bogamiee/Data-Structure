@@ -16,7 +16,10 @@ void huffmanEncode(char str[], char* encoded[], Node* huffman);
 // Recursively creates Huffman codes for all characters and stores them in the codeMap.
 void createCode(Node* node, char* codeMap[], char code[], int index);
 
+void printCodeMap(char* codeMap[]);
+
 // Decodes the encoded string using the provided Huffman tree.
 char* huffmanDecode(char encoded[], Node* huffman);
+
 
 #endif // HUFFMAN_H
