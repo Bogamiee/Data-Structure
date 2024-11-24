@@ -79,6 +79,7 @@ void huffmanTree(Node** huffman, char str[]) {
     deleteQueue(&nodeQueue);
 }
 
+// Malloc
 void huffmanEncode(char str[], char** encoded, Node* huffman) {
     char* codeMap[1024] = {NULL};
     char code[256] = {'\0'};
