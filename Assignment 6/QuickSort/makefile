@@ -7,13 +7,13 @@ LDFLAGS = -lm
 TARGET = main.exe
 
 # 소스 파일 목록
-SRCS = DataGen.cpp MergeSort.cpp TimeMsr.cpp main.cpp
+SRCS = DataGen.cpp QuickSort.cpp TimeMsr.cpp main.cpp
 
 # 오브젝트 파일 목록
 OBJS = $(SRCS:.cpp=.o)
 
 # 헤더 파일 목록
-DEPS = DataGen.h MergeSort.h TimeMsr.h
+DEPS = DataGen.h QuickSort.h TimeMsr.h
 
 # 기본 규칙
 all: $(TARGET)
