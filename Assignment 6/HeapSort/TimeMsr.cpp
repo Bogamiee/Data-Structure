@@ -16,10 +16,10 @@ void TimeMsr::printExecutionTime() {
     long double milliseconds = microseconds / 1000.0;
     long double seconds = milliseconds / 1000.0;
 
-    cout << "\nExecution time:" << endl;
+    cout << "Execution time:" << endl;
     cout << "- " << microseconds << " microseconds" << endl;
     cout << "- " << milliseconds << " milliseconds" << endl;
-    cout << "- " << seconds << " seconds" << endl;
+    cout << "- " << seconds << " seconds\n" << endl;
 }
 
 TimeMsr::~TimeMsr() {}
